@@ -24,7 +24,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ViewPagerHomeScreen(pageIndex, _navigationItemList, onPgeChanged),
+      body: _navigationItemList[pageIndex],
       bottomNavigationBar: BottomNav(pageIndex, onPgeChanged),
     );
   }
@@ -45,8 +45,10 @@ class BottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(currentIndex: startIndex,
+    return BottomNavigationBar(
+        currentIndex: startIndex,
         onTap: navigate,
+        type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
               icon: Icon(Icons.movie_creation),
@@ -63,33 +65,6 @@ class BottomNav extends StatelessWidget {
               title: Text(WATCH_LIST_PAGE_NAME)
           ),
         ]);
-  }
-
-}
-
-class ViewPagerHomeScreen extends StatelessWidget {
-  final int index;
-  final onPageChanged;
-  final List<Widget> navigationItems;
-
-  PageController _pageController;
-
-  ViewPagerHomeScreen(this.index, this.navigationItems, this.onPageChanged);
-
-  void navigationTapped(int page) {
-    _pageController.animateToPage(page,
-        duration: const Duration(milliseconds: 300), curve: Curves.ease);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    _pageController = PageController(initialPage: index);
-
-    return PageView(
-      children: navigationItems,
-      onPageChanged: onPageChanged,
-      controller: _pageController,
-    );
   }
 
 }
