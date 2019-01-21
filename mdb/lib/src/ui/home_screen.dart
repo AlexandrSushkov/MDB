@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'movie_details.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key key, this.title}) : super(key: key);
@@ -14,7 +15,17 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('content'),
+            GestureDetector(
+              child: Text('content'),
+              onTap: () {
+                Route route = MaterialPageRoute(
+                    builder: (context) => MovieDetails(
+                          title: "Fight club",
+                          id: 550,
+                        ));
+                Navigator.of(context).push(route);
+              },
+            )
           ],
         ),
       ),
