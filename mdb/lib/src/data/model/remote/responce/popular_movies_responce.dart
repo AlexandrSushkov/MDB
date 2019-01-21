@@ -19,7 +19,7 @@ class PopularMoviesResponse {
     _movies = temp;
   }
 
-  List<Movie> get results => _movies;
+  List<Movie> get movies => _movies;
 
   int get total_pages => _total_pages;
 
