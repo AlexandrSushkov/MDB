@@ -25,6 +25,7 @@ dependencies:
   url_launcher: ^5.0.0
   share: ^0.6.0
   sqflite: ^1.0.0
+  rxdart: ^0.18.0
 
 dev_dependencies:
   flutter_test:
