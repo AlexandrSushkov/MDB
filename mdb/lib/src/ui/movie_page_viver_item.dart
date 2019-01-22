@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mdb/src/data/model/local/movie.dart';
+import 'package:mdb/src/ui/movie_details_screen.dart';
 import 'package:mdb/src/utils/constants.dart';
 import 'package:mdb/src/utils/wigdet/page_transformer.dart';
 
@@ -11,6 +12,64 @@ class MoviePageViewerItem extends StatelessWidget {
 
   final Movie movie;
   final PageVisibility pageVisibility;
+  final double _cornerRadius = 16.0;
+
+  @override
+  Widget build(BuildContext context) {
+    var image = Image.network(
+      '$imagePrefixLarge${movie.poster_path}',
+      fit: BoxFit.cover,
+      alignment: FractionalOffset(
+        0.5 + (pageVisibility.pagePosition / 3),
+        0.5,
+      ),
+    );
+
+    var imageOverlayGradient = DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(_cornerRadius),
+        gradient: LinearGradient(
+          begin: FractionalOffset.bottomCenter,
+          end: FractionalOffset.topCenter,
+          colors: [
+            const Color(0xFF000000),
+            const Color(0x00000000),
+          ],
+        ),
+      ),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 16.0,
+        horizontal: 8.0,
+      ),
+      child: Card(
+        elevation: 8.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(_cornerRadius),
+        ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            ClipRRect(borderRadius: BorderRadius.circular(_cornerRadius), child: image),
+            imageOverlayGradient,
+            _buildTextContainer(context),
+            Material(
+              type: MaterialType.transparency,
+              child: InkWell(onTap: () {
+                _showProductDetailsPage(context);
+              }),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showProductDetailsPage(BuildContext context) async {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MovieDetailsScreen(movie: movie)));
+  }
 
   Widget _applyTextEffects({
     @required double translationFactor,
@@ -54,8 +113,7 @@ class MoviePageViewerItem extends StatelessWidget {
         padding: const EdgeInsets.only(top: 16.0),
         child: Text(
           movie.title,
-          style: textTheme.title
-              .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+          style: textTheme.title.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
       ),
@@ -74,50 +132,4 @@ class MoviePageViewerItem extends StatelessWidget {
       ),
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    var image = Image.network(
-      '$posterImagePrefix${movie.poster_path}',
-      fit: BoxFit.cover,
-      alignment: FractionalOffset(
-        0.5 + (pageVisibility.pagePosition / 3),
-        0.5,
-      ),
-    );
-
-    var imageOverlayGradient = DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: FractionalOffset.bottomCenter,
-          end: FractionalOffset.topCenter,
-          colors: [
-            const Color(0xFF000000),
-            const Color(0x00000000),
-          ],
-        ),
-      ),
-    );
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 16.0,
-        horizontal: 8.0,
-      ),
-      child: Material(
-        elevation: 4.0,
-        borderRadius: BorderRadius.circular(8.0),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            image,
-            imageOverlayGradient,
-            _buildTextContainer(context),
-          ],
-        ),
-      ),
-    );
-  }
-
-
 }
