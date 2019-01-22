@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../di/di.dart';
-import '../rep/movie_db_api.dart';
-import '../models/movie.dart';
+import '../../di/di.dart';
+import '../../models/movie.dart';
+import 'movie_details_bloc.dart';
 
 class MovieDetails extends StatelessWidget {
   MovieDetails({Key key, this.title, this.id}) : super(key: key);
@@ -34,30 +34,32 @@ class _BodyState extends State<_Body> {
 
   int id;
   List ws = [];
-  Movie _movie;
-  IMovieApi _api = DepInj().getMovieApi();
+  MovieDetailsBloc bloc = MovieDetailsBloc(api: DepInj().getMovieApi());
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    bloc.getDetails(id);
+  }
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _movie == null
-        ? _getProgressDialog()
-        : Center(
-            child: Text(_movie.title + "\n" + _movie.overview),
-          );
+    return StreamBuilder(
+      stream: bloc.getDetailsStream(),
+      builder: (BuildContext context, AsyncSnapshot<Movie> snapshot) {
+        if (snapshot.hasData) {
+          return Text(snapshot.data.overview);
+        }
+        return _getProgressDialog();
+      },
+    );
   }
 
   _getProgressDialog() => Center(child: CircularProgressIndicator());
-
-  _loadData() async {
-    Movie m = await _api.getMovie(id);
-    setState(() {
-      _movie = m;
-    });
-  }
 }
