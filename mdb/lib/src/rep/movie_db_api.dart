@@ -15,7 +15,11 @@ class MovieApi implements IMovieApi {
   @override
   Future<Movie> getMovie(int id) async {
     http.Response response = await http.get(
-        "https://api.themoviedb.org/3/movie/$id?api_key=yourapikey");
-    return mapper.responseToMovie(response.body);
+        "https://api.themoviedb.org/3/movie/$id?api_key=1");
+    if (response.statusCode == 200) {
+      return mapper.responseToMovie(response.body);
+    } else {
+      throw Exception("Something went wrong. Try again later.");
+    }
   }
 }

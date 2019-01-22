@@ -11,8 +11,12 @@ class MovieDetailsBloc {
   Stream<Movie> getDetailsStream() => _controller.stream;
 
   void getDetails(int id) async {
-    var d = await api.getMovie(id);
-    _controller.sink.add(d);
+    try {
+      var d = await api.getMovie(id);
+      _controller.sink.add(d);
+    } catch (e) {
+      _controller.sink.addError(e.toString());
+    }
   }
 
   void dispose() {

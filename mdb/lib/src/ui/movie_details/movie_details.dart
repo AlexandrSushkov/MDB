@@ -55,6 +55,8 @@ class _BodyState extends State<_Body> {
       builder: (BuildContext context, AsyncSnapshot<Movie> snapshot) {
         if (snapshot.hasData) {
           return Text(snapshot.data.overview);
+        } else if (snapshot.hasError) {
+          return Text(snapshot.error.toString());
         }
         return _getProgressDialog();
       },
