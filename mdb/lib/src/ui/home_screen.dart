@@ -34,13 +34,13 @@ class HomeScreen extends StatelessWidget {
         gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         itemBuilder: (BuildContext context, int index) {
           return Image.network(
-            '$posterImagePrefix${snapshot.data.movies[index].poster_path}',
+            '$imagePrefixSmall${snapshot.data.movies[index].poster_path}',
             fit: BoxFit.cover,
           );
         });
   }
 
-  Widget buildPageViewer(List<Movie> movies){
+  Widget buildPageViewer(List<Movie> movies) {
     return PageTransformer(
       pageViewBuilder: (context, pageVisibilityResolver) {
         return PageView.builder(
