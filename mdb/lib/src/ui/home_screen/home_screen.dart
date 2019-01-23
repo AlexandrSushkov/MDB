@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mdb/src/resource/resource.dart';
 import 'package:mdb/src/ui/home_screen/dicover_screen.dart';
-import 'package:mdb/src/ui/home_screen/search_screen.dart';
+import 'package:mdb/src/ui/search_screen.dart';
 import 'package:mdb/src/ui/home_screen/watch_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   final List<Widget> _navigationItemList = [
-    DiscoverScreen(),
+    DiscoverScreenNavigator(),
     SearchScreen(),
     WatchListScreen()
   ];
