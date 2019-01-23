@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 
 abstract class IMovieApi {
   Future<Movie> getMovie(int id);
+
+  Future<List<String>> getMovieImages(int id);
 }
 
 class MovieApi implements IMovieApi {
@@ -15,9 +17,20 @@ class MovieApi implements IMovieApi {
   @override
   Future<Movie> getMovie(int id) async {
     http.Response response = await http.get(
-        "https://api.themoviedb.org/3/movie/$id?api_key=1");
+        "https://api.themoviedb.org/3/movie/$id?api_key=d7bedb908133c2cc9b4743fdb639d33d");
     if (response.statusCode == 200) {
-      return mapper.responseToMovie(response.body);
+      return mapper.parseMovie(response.body);
+    } else {
+      throw Exception("Something went wrong. Try again later.");
+    }
+  }
+
+  @override
+  Future<List<String>> getMovieImages(int id) async {
+    http.Response response = await http.get(
+        "https://api.themoviedb.org/3/movie/$id/images?api_key=d7bedb908133c2cc9b4743fdb639d33d");
+    if (response.statusCode == 200) {
+      return mapper.parseImagesList(response.body);
     } else {
       throw Exception("Something went wrong. Try again later.");
     }
