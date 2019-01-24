@@ -40,7 +40,7 @@ class _BodyState extends State<_Body> {
   @override
   void initState() {
     super.initState();
-    bloc.getDetails(id);
+    bloc.loadDetails(id);
   }
 
   @override
@@ -60,7 +60,8 @@ class _BodyState extends State<_Body> {
             children: <Widget>[
               _getHeader(snapshot.data),
               _getOverview(snapshot.data),
-              _getImages()
+              _getImages(),
+              _getCast()
             ],
           );
         } else if (snapshot.hasError) {
@@ -101,7 +102,8 @@ class _BodyState extends State<_Body> {
   }
 
   Widget _getOverview(Movie m) {
-    bloc.getImages(id);
+    bloc.loadImages(id);
+    bloc.loadCast(id);
     return Text(m.overview);
   }
 
@@ -113,12 +115,45 @@ class _BodyState extends State<_Body> {
             return CarouselSlider(
               height: 150,
               autoPlay: false,
-              viewportFraction: 0.8,
+              viewportFraction: 0.5,
               items: List<Widget>.generate(snapshot.data.length, (int i) {
                 return Image.network(ApiConfig.apiPosterPath + snapshot.data[i],
                     fit: BoxFit.fill);
               }),
             );
+          } else if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          return _getProgressDialog();
+        });
+  }
+
+  Widget _getCast() {
+    return StreamBuilder(
+        stream: bloc.getCastStream(),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<Map<String, String>>> snapshot) {
+          if (snapshot.hasData) {
+            return Container(
+                height: 200,
+                decoration: BoxDecoration(color: Colors.blue[100]),
+                child: ListView.builder(
+                    itemCount: snapshot.data.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Expanded(
+                              child: Image.network(
+                                  ApiConfig.apiPhotoPath +
+                                      snapshot.data[index]['photo'],
+                                  fit: BoxFit.fill)),
+                          Text(snapshot.data[index]['name'])
+                        ],
+                      );
+                    }));
           } else if (snapshot.hasError) {
             return Text(snapshot.error.toString());
           }

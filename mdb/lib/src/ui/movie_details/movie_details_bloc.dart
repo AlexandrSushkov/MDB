@@ -8,12 +8,16 @@ class MovieDetailsBloc {
   final IMovieApi api;
   StreamController<Movie> _controller = StreamController<Movie>();
   StreamController<List<String>> _imagesController = StreamController();
+  StreamController<List<Map<String, String>>> _castController =
+      StreamController();
 
   Stream<Movie> getDetailsStream() => _controller.stream;
 
   Stream<List<String>> getImagesStream() => _imagesController.stream;
 
-  void getDetails(int id) async {
+  Stream<List<Map<String, String>>> getCastStream() => _castController.stream;
+
+  void loadDetails(int id) async {
     try {
       var d = await api.getMovie(id);
       _controller.sink.add(d);
@@ -22,7 +26,7 @@ class MovieDetailsBloc {
     }
   }
 
-  void getImages(int id) async {
+  void loadImages(int id) async {
     try {
       var d = await api.getMovieImages(id);
       _imagesController.sink.add(d);
@@ -31,8 +35,18 @@ class MovieDetailsBloc {
     }
   }
 
+  void loadCast(int id) async {
+    try {
+      var d = await api.getMovieCast(id);
+      _castController.sink.add(d);
+    } catch (e) {
+      _castController.sink.addError(e.toString());
+    }
+  }
+
   void dispose() {
     _controller.close();
     _imagesController.close();
+    _castController.close();
   }
 }

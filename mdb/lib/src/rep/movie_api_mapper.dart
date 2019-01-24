@@ -5,6 +5,8 @@ abstract class IMovieApiMapper {
   Movie parseMovie(String response);
 
   List<String> parseImagesList(String response);
+
+  List<Map<String, String>> parseCastList(String response);
 }
 
 class MovieApiMapper implements IMovieApiMapper {
@@ -26,6 +28,16 @@ class MovieApiMapper implements IMovieApiMapper {
       m.countries.add(value['name']);
     }
     return m;
+  }
+
+  @override
+  List<Map<String, String>> parseCastList(String response) {
+    var r = json.decode(response);
+    List<Map<String, String>> res = [];
+    for (var value in r['cast']) {
+      res.add({'name': value['name'], 'photo': value['profile_path']});
+    }
+    return res;
   }
 
   @override
