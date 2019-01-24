@@ -75,6 +75,7 @@ class _BodyState extends State<_Body> {
 
   Widget _getHeader(Movie m) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Expanded(
           flex: 1,
@@ -84,11 +85,7 @@ class _BodyState extends State<_Body> {
         Expanded(
           flex: 2,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            verticalDirection: VerticalDirection.down,
             crossAxisAlignment: CrossAxisAlignment.start,
-            textDirection: TextDirection.ltr,
-            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(m.title, textAlign: TextAlign.left),
               Text(m.genres.join(", ")),

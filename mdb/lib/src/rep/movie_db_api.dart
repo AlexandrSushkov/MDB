@@ -2,6 +2,7 @@ import '../models/movie.dart';
 import 'movie_api_mapper.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import '../resource/resource.dart';
 
 abstract class IMovieApi {
   Future<Movie> getMovie(int id);
@@ -17,7 +18,7 @@ class MovieApi implements IMovieApi {
   @override
   Future<Movie> getMovie(int id) async {
     http.Response response = await http.get(
-        "https://api.themoviedb.org/3/movie/$id?api_key=d7bedb908133c2cc9b4743fdb639d33d");
+        "https://api.themoviedb.org/3/movie/$id?api_key=" + API_KEY);
     if (response.statusCode == 200) {
       return mapper.parseMovie(response.body);
     } else {
@@ -28,7 +29,7 @@ class MovieApi implements IMovieApi {
   @override
   Future<List<String>> getMovieImages(int id) async {
     http.Response response = await http.get(
-        "https://api.themoviedb.org/3/movie/$id/images?api_key=d7bedb908133c2cc9b4743fdb639d33d");
+        "https://api.themoviedb.org/3/movie/$id/images?api_key=" + API_KEY);
     if (response.statusCode == 200) {
       return mapper.parseImagesList(response.body);
     } else {

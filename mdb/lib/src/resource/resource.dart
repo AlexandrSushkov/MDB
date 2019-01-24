@@ -3,3 +3,6 @@
 const DISCOVER_PAGE_NAME = 'Discover';
 const SEARCH_PAGE_NAME = 'Seach';
 const WATCH_LIST_PAGE_NAME = 'Watch list';
+
+// api
+const API_KEY = 'key';
