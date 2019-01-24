@@ -10,12 +10,17 @@ class MovieDetailsBloc {
   StreamController<List<String>> _imagesController = StreamController();
   StreamController<List<Map<String, String>>> _castController =
       StreamController();
+  StreamController<List<Map<String, String>>> _similarController =
+      StreamController();
 
   Stream<Movie> getDetailsStream() => _controller.stream;
 
   Stream<List<String>> getImagesStream() => _imagesController.stream;
 
   Stream<List<Map<String, String>>> getCastStream() => _castController.stream;
+
+  Stream<List<Map<String, String>>> getSimilarStream() =>
+      _similarController.stream;
 
   void loadDetails(int id) async {
     try {
@@ -44,9 +49,19 @@ class MovieDetailsBloc {
     }
   }
 
+  void loadSimilar(int id) async {
+    try {
+      var d = await api.getMovieSimilar(id);
+      _similarController.sink.add(d);
+    } catch (e) {
+      _similarController.sink.addError(e.toString());
+    }
+  }
+
   void dispose() {
     _controller.close();
     _imagesController.close();
     _castController.close();
+    _similarController.close();
   }
 }

@@ -8,7 +8,10 @@ abstract class IMovieApi {
   Future<Movie> getMovie(int id);
 
   Future<List<String>> getMovieImages(int id);
+
   Future<List<Map<String, String>>> getMovieCast(int id);
+
+  Future<List<Map<String, String>>> getMovieSimilar(int id);
 }
 
 class MovieApi implements IMovieApi {
@@ -18,8 +21,8 @@ class MovieApi implements IMovieApi {
 
   @override
   Future<Movie> getMovie(int id) async {
-    http.Response response = await http.get(
-        "https://api.themoviedb.org/3/movie/$id?api_key=" + API_KEY);
+    http.Response response = await http
+        .get("https://api.themoviedb.org/3/movie/$id?api_key=" + API_KEY);
     if (response.statusCode == 200) {
       return mapper.parseMovie(response.body);
     } else {
@@ -44,6 +47,17 @@ class MovieApi implements IMovieApi {
         "https://api.themoviedb.org/3/movie/$id/credits?api_key=" + API_KEY);
     if (response.statusCode == 200) {
       return mapper.parseCastList(response.body);
+    } else {
+      throw Exception("Something went wrong. Try again later.");
+    }
+  }
+
+  @override
+  Future<List<Map<String, String>>> getMovieSimilar(int id) async {
+    http.Response response = await http.get(
+        "https://api.themoviedb.org/3/movie/$id/similar?api_key=" + API_KEY);
+    if (response.statusCode == 200) {
+      return mapper.parseSimilarList(response.body);
     } else {
       throw Exception("Something went wrong. Try again later.");
     }

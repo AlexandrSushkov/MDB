@@ -61,7 +61,8 @@ class _BodyState extends State<_Body> {
               _getHeader(snapshot.data),
               _getOverview(snapshot.data),
               _getImages(),
-              _getCast()
+              _getCast(),
+              _getSimilar()
             ],
           );
         } else if (snapshot.hasError) {
@@ -104,6 +105,7 @@ class _BodyState extends State<_Body> {
   Widget _getOverview(Movie m) {
     bloc.loadImages(id);
     bloc.loadCast(id);
+    bloc.loadSimilar(id);
     return Text(m.overview);
   }
 
@@ -142,7 +144,7 @@ class _BodyState extends State<_Body> {
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Expanded(
@@ -151,6 +153,39 @@ class _BodyState extends State<_Body> {
                                       snapshot.data[index]['photo'],
                                   fit: BoxFit.fill)),
                           Text(snapshot.data[index]['name'])
+                        ],
+                      );
+                    }));
+          } else if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          return _getProgressDialog();
+        });
+  }
+
+  Widget _getSimilar() {
+    return StreamBuilder(
+        stream: bloc.getSimilarStream(),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<Map<String, String>>> snapshot) {
+          if (snapshot.hasData) {
+            return Container(
+                height: 200,
+                decoration: BoxDecoration(color: Colors.red[100]),
+                child: ListView.builder(
+                    itemCount: snapshot.data.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Expanded(
+                              child: Image.network(
+                                  ApiConfig.apiPosterPath +
+                                      snapshot.data[index]['poster'],
+                                  fit: BoxFit.fill)),
+                          Text(snapshot.data[index]['title'])
                         ],
                       );
                     }));

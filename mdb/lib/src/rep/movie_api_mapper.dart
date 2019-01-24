@@ -7,6 +7,8 @@ abstract class IMovieApiMapper {
   List<String> parseImagesList(String response);
 
   List<Map<String, String>> parseCastList(String response);
+
+  List<Map<String, String>> parseSimilarList(String response);
 }
 
 class MovieApiMapper implements IMovieApiMapper {
@@ -36,6 +38,16 @@ class MovieApiMapper implements IMovieApiMapper {
     List<Map<String, String>> res = [];
     for (var value in r['cast']) {
       res.add({'name': value['name'], 'photo': value['profile_path']});
+    }
+    return res;
+  }
+
+  @override
+  List<Map<String, String>> parseSimilarList(String response) {
+    var r = json.decode(response);
+    List<Map<String, String>> res = [];
+    for (var value in r['results']) {
+      res.add({'title': value['original_title'], 'poster': value['poster_path']});
     }
     return res;
   }
