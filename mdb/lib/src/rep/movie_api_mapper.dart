@@ -19,10 +19,12 @@ class MovieApiMapper implements IMovieApiMapper {
     m.title = r['original_title'];
     m.overview = r['overview'];
     m.posterPath = r['poster_path'];
+    m.backdropPath = r['backdrop_path'];
     m.releaseDate = DateTime.parse(r['release_date']);
     m.tagLine = r['tagline'];
     m.revenue = r['revenue'];
     m.runtime = r['runtime'];
+    m.voteAverage = r['vote_average'];
     for (var value in r['genres']) {
       m.genres.add(value['name']);
     }
