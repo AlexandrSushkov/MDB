@@ -39,32 +39,47 @@ class MoviePageViewerItem extends StatelessWidget {
       ),
     );
 
+//    return Padding(padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+//      child: PhotoPosterHero(photo: '$imagePrefixLarge${movie.poster_path}', onTap: _onPosterClick(context, movie),),
+//    );
+
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 16.0,
-        horizontal: 8.0,
-      ),
-      child: Card(
-        elevation: 8.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(_cornerRadius),
+        padding: const EdgeInsets.symmetric(
+          vertical: 16.0,
+          horizontal: 8.0,
         ),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            ClipRRect(borderRadius: BorderRadius.circular(_cornerRadius), child: image),
-            imageOverlayGradient,
-            _buildTextContainer(context),
-            Material(
-              type: MaterialType.transparency,
-              child: InkWell(onTap: () {
-                _showProductDetailsPage(context);
-              }),
+        child: Hero(
+          tag: movie.id,
+          child: Card(
+            elevation: 8.0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(_cornerRadius),
             ),
-          ],
-        ),
-      ),
-    );
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(_cornerRadius),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: _onPosterClick(context, movie),
+                      child: Image.network('$imagePrefixLarge${movie.poster_path}', fit: BoxFit.fitHeight),
+                    ),
+                  ),
+                ),
+//                imageOverlayGradient,
+                _buildTextContainer(context),
+                Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(onTap: () {
+                    _showProductDetailsPage(context);
+                  }),
+                ),
+              ],
+            ),
+          ),
+        ));
   }
 
   Future<void> _showProductDetailsPage(BuildContext context) async {
@@ -111,10 +126,18 @@ class MoviePageViewerItem extends StatelessWidget {
       translationFactor: 200.0,
       child: Padding(
         padding: const EdgeInsets.only(top: 16.0),
-        child: Text(
-          movie.title,
-          style: textTheme.title.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
+//        child: Text(
+//          movie.title,
+//          style: textTheme.title.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+//          textAlign: TextAlign.center,
+//        ),
+        child: Hero(
+          tag: movie.title,
+          child: Text(
+            movie.title,
+            style: textTheme.title.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );
@@ -129,6 +152,60 @@ class MoviePageViewerItem extends StatelessWidget {
           categoryText,
           titleText,
         ],
+      ),
+    );
+  }
+}
+
+class PhotoPosterHero extends StatelessWidget {
+  const PhotoPosterHero({Key key, this.photo, this.onTap}) : super(key: key);
+
+  final String photo;
+  final VoidCallback onTap;
+
+  Widget build(BuildContext context) {
+    return Hero(
+      tag: photo,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          child: Image.network(photo, fit: BoxFit.fitHeight),
+        ),
+      ),
+    );
+  }
+}
+
+class TitleHero extends StatelessWidget {
+  const TitleHero({Key key, this.title}) : super(key: key);
+
+  final String title;
+
+  Widget build(BuildContext context) {
+    return Hero(tag: title, child: Text(title));
+  }
+}
+
+VoidCallback _onPosterClick(BuildContext context, Movie movie) {
+  return () {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MovieDetailsScreen(movie: movie)));
+  };
+}
+
+class PhotoHero extends StatelessWidget {
+  const PhotoHero({Key key, this.photo, this.onTap, this.width}) : super(key: key);
+
+  final String photo;
+  final VoidCallback onTap;
+  final double width;
+
+  Widget build(BuildContext context) {
+    return Hero(
+      tag: photo,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(onTap: onTap, child: Image.network(photo, fit: BoxFit.fitHeight)),
       ),
     );
   }
