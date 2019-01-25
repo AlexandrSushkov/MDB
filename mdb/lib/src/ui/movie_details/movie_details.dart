@@ -60,7 +60,7 @@ class _BodyState extends State<_Body> {
           return ListView(
             scrollDirection: Axis.vertical,
             children: <Widget>[
-              _getHeader2(snapshot.data),
+              _getHeader2(snapshot.data, Theme.of(context).textTheme),
               SizedBox(height: 10),
               _getOverview(snapshot.data),
               SizedBox(height: 10),
@@ -81,18 +81,19 @@ class _BodyState extends State<_Body> {
 
   _getProgressDialog() => Center(child: CircularProgressIndicator());
 
-  Widget _getHeader2(Movie m) {
+  Widget _getHeader2(Movie m, TextTheme textTheme) {
     return Stack(
       children: <Widget>[
         Padding(
-            padding: const EdgeInsets.only(bottom: 130),
-            child: ArcImage(ApiConfig.apiBackdropPath + m.backdropPath, 100)),
-        Positioned(bottom: 0, left: 10, right: 10, child: _getHeader(m))
+            padding: const EdgeInsets.only(bottom: 170),
+            child: ArcImage(ApiConfig.apiBackdropPath + m.backdropPath, 140)),
+        Positioned(
+            bottom: 0, left: 10, right: 10, child: _getHeader(m, textTheme))
       ],
     );
   }
 
-  Widget _getHeader(Movie m) {
+  Widget _getHeader(Movie m, TextTheme textTheme) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
@@ -107,18 +108,24 @@ class _BodyState extends State<_Body> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(m.title, textAlign: TextAlign.left),
-              Text(m.releaseDate.year.toString(), textAlign: TextAlign.left),
-              Text(m.countries.join(", ")),
-              Text(m.runtime.toString() + " mins"),
-              Text('"' + m.tagLine + '"', textAlign: TextAlign.left),
+              Text(m.title, style: textTheme.title),
+              Text(m.countries.join(", "), style: textTheme.body1),
+              Text(
+                  m.releaseDate.year.toString() +
+                      " | " +
+                      m.runtime.toString() +
+                      " mins",
+                  style: textTheme.body1),
+              Text('"' + m.tagLine + '"', style: textTheme.body1),
               StarRating(m.voteAverage),
               Row(
                   children: m.genres.map((genre) {
                 return Padding(
-                    padding: const EdgeInsets.only(right: 7),
+                    padding: const EdgeInsets.only(right: 2),
                     child: Chip(
-                        label: Text(genre), backgroundColor: Colors.black12));
+                        label: Text(genre),
+                        backgroundColor: Colors.black12,
+                        labelStyle: textTheme.caption));
               }).toList())
             ],
           ),
@@ -131,7 +138,7 @@ class _BodyState extends State<_Body> {
     bloc.loadImages(id);
     bloc.loadCast(id);
     bloc.loadSimilar(id);
-    return Text(m.overview);
+    return Padding(padding: const EdgeInsets.all(2), child: Text(m.overview));
   }
 
   Widget _getImages() {
