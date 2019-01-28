@@ -38,16 +38,21 @@ class _BodyState extends State<_Body> {
 
   int id;
   MovieDetailsBloc bloc = MovieDetailsBloc(api: DepInj().getMovieApi());
+  List<Map<String, String>> _similar = [];
+  final _scrollController = ScrollController();
+  final _scrollThreshold = 200.0;
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     bloc.loadDetails(id);
   }
 
   @override
   void dispose() {
     bloc.dispose();
+    _similar.clear();
     super.dispose();
   }
 
@@ -137,7 +142,7 @@ class _BodyState extends State<_Body> {
   Widget _getOverview(Movie m) {
     bloc.loadImages(id);
     bloc.loadCast(id);
-    bloc.loadSimilar(id);
+    bloc.newSimilar.add(id);
     return Padding(padding: const EdgeInsets.all(2), child: Text(m.overview));
   }
 
@@ -213,12 +218,14 @@ class _BodyState extends State<_Body> {
         builder: (BuildContext context,
             AsyncSnapshot<List<Map<String, String>>> snapshot) {
           if (snapshot.hasData) {
+            _similar.addAll(snapshot.data);
             return Container(
                 height: 200,
                 decoration: BoxDecoration(color: Colors.red[100]),
                 child: ListView.builder(
-                    itemCount: snapshot.data.length,
+                    itemCount: _similar.length,
                     scrollDirection: Axis.horizontal,
+                    controller: _scrollController,
                     padding: const EdgeInsets.all(3),
                     itemBuilder: (context, index) {
                       return Column(
@@ -228,9 +235,9 @@ class _BodyState extends State<_Body> {
                           Expanded(
                               child: Image.network(
                                   ApiConfig.apiPosterPath +
-                                      snapshot.data[index]['poster'],
+                                      _similar[index]['poster'],
                                   fit: BoxFit.fill)),
-                          Text(snapshot.data[index]['title'])
+                          Text(_similar[index]['title'])
                         ],
                       );
                     }));
@@ -239,5 +246,13 @@ class _BodyState extends State<_Body> {
           }
           return _getProgressDialog();
         });
+  }
+
+  void _onScroll() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    if (maxScroll - currentScroll <= _scrollThreshold) {
+      bloc.newSimilar.add(id);
+    }
   }
 }

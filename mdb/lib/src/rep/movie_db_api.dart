@@ -11,7 +11,7 @@ abstract class IMovieApi {
 
   Future<List<Map<String, String>>> getMovieCast(int id);
 
-  Future<List<Map<String, String>>> getMovieSimilar(int id);
+  Future<List<Map<String, String>>> getMovieSimilar(int id, int page);
 }
 
 class MovieApi implements IMovieApi {
@@ -53,9 +53,12 @@ class MovieApi implements IMovieApi {
   }
 
   @override
-  Future<List<Map<String, String>>> getMovieSimilar(int id) async {
+  Future<List<Map<String, String>>> getMovieSimilar(int id, int page) async {
     http.Response response = await http.get(
-        "https://api.themoviedb.org/3/movie/$id/similar?api_key=" + API_KEY);
+        "https://api.themoviedb.org/3/movie/$id/similar?api_key=" +
+            API_KEY +
+            "&page=" +
+            page.toString());
     if (response.statusCode == 200) {
       return mapper.parseSimilarList(response.body);
     } else {
