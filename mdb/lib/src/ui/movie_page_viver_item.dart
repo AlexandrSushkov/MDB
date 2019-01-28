@@ -45,7 +45,7 @@ class MoviePageViewerItem extends StatelessWidget {
 
     return Padding(
         padding: const EdgeInsets.symmetric(
-          vertical: 16.0,
+          vertical: 48.0,
           horizontal: 8.0,
         ),
         child: Hero(
