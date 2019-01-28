@@ -5,17 +5,21 @@ class DiscoverScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GestureDetector(
-        child: Center(child: Text('content')),
-        onTap: () {
-          Route route = MaterialPageRoute(
-              builder: (context) => MovieDetails(
-                    title: "Fight club",
-                    id: 550,
-                  ));
-          Navigator.of(context).push(route);
-        },
-      ),
+      backgroundColor: Colors.blue,
+      body: Center(
+          child: GestureDetector(
+        child: Text('Discover Screen'),
+        onTap: () => goToDetail(context),
+      )),
     );
+  }
+
+  void goToDetail(BuildContext context) {
+    Route route = MaterialPageRoute(
+        builder: (context) => MovieDetails(
+              title: "Fight club",
+              id: 550,
+            ));
+    Navigator.of(context).push(route);
   }
 }
