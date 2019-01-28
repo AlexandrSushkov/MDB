@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mdb/src/navigation/discovery_navigator.dart';
 import 'package:mdb/src/resource/resource.dart';
-import 'package:mdb/src/ui/home_screen/dicover_screen.dart';
 import 'package:mdb/src/ui/search_screen.dart';
 import 'package:mdb/src/ui/home_screen/watch_list_screen.dart';
 
@@ -13,18 +13,21 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  final List<Widget> _navigationItemList = [
+  var pageIndex = 0;
+
+  static List<Widget> _navigationItemList = [
     DiscoverScreenNavigator(),
     SearchScreen(),
     WatchListScreen()
   ];
 
-  var pageIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _navigationItemList[pageIndex],
+      body: IndexedStack(
+        index: pageIndex,
+        children: _navigationItemList
+      ),
       bottomNavigationBar: BottomNav(pageIndex, onPgeChanged),
     );
   }
@@ -34,7 +37,6 @@ class HomeScreenState extends State<HomeScreen> {
       this.pageIndex = index;
     });
   }
-
 }
 
 class BottomNav extends StatelessWidget {
