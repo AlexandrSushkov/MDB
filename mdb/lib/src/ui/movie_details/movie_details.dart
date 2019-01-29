@@ -1,11 +1,12 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+
 import '../../di/di.dart';
 import '../../models/movie.dart';
-import 'movie_details_bloc.dart';
 import '../../rep/api_configuration.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import '../utils/arc_image.dart';
 import '../utils/stars_rating.dart';
+import 'movie_details_bloc.dart';
 
 class MovieDetails extends StatelessWidget {
   MovieDetails({Key key, this.title, this.id}) : super(key: key);
@@ -62,20 +63,24 @@ class _BodyState extends State<_Body> {
       stream: bloc.getDetailsStream(),
       builder: (BuildContext context, AsyncSnapshot<Movie> snapshot) {
         if (snapshot.hasData) {
-          return ListView(
-            scrollDirection: Axis.vertical,
-            children: <Widget>[
-              _getHeader2(snapshot.data, Theme.of(context).textTheme),
-              SizedBox(height: 10),
-              _getOverview(snapshot.data),
-              SizedBox(height: 10),
-              _getImages(),
-              SizedBox(height: 10),
-              _getCast(),
-              SizedBox(height: 10),
-              _getSimilar()
-            ],
-          );
+          return SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  _getHeader2(snapshot.data, Theme.of(context).textTheme),
+                  SizedBox(height: 10),
+                  _getOverview(snapshot.data),
+                  SizedBox(height: 10),
+                  _getImages(),
+                  SizedBox(height: 10),
+                  _getCast(),
+                  SizedBox(height: 10),
+                  _getSimilar()
+                ],
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+              ),
+              scrollDirection: Axis.vertical);
         } else if (snapshot.hasError) {
           return Text(snapshot.error.toString());
         }
