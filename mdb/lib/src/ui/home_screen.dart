@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mdb/src/bloc/movie_block.dart';
+import 'package:mdb/src/data/model/local/genre.dart';
 import 'package:mdb/src/data/model/local/movie.dart';
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
 import 'package:mdb/src/data/model/remote/responce/popular_movies_responce.dart';
@@ -31,24 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _scaffoldKey.currentState
         .showBottomSheet<void>((BuildContext context) {
           final ThemeData themeData = Theme.of(context);
-          return Container(
-              decoration: BoxDecoration(border: Border(top: BorderSide(color: themeData.disabledColor))),
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.min, children: <Widget>[
-                  StreamBuilder(
-                    stream: bloc.genres,
-                    builder: (context, AsyncSnapshot<GenresResponse> snapshot) {
-                      if (snapshot.hasData) {
-                        return Text(snapshot.data.genres.toString());
-                      } else if (snapshot.hasError) {
-                        return Text(snapshot.error.toString());
-                      }
-                      return Center(child: CircularProgressIndicator());
-                    },
-                  )
-                ]),
-              ));
+          return _Filter();
         })
         .closed
         .whenComplete(() {
@@ -122,6 +106,141 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         );
       },
+    );
+  }
+}
+
+class _Filter extends StatefulWidget {
+  @override
+  _FilterState createState() => _FilterState();
+}
+
+class _FilterState extends State<_Filter> {
+  final Set<String> _selectedGenres = Set<String>();
+
+  @override
+  Widget build(BuildContext context) {
+    final _filterButton = _FilterButton();
+
+    final _filterChip = StreamBuilder(
+        stream: bloc.genres,
+        builder: (context, AsyncSnapshot<GenresResponse> snapshot) {
+          if (snapshot.hasData) {
+            return _ChipsTile(
+              label: 'filter',
+              children: snapshot.data.genres.map<Widget>((Genre genre) {
+                return FilterChip(
+                    key: ValueKey<String>(genre.name),
+                    label: Text(genre.name),
+                    selected: _selectedGenres.contains(genre.name),
+                    onSelected: (bool value) {
+                      setState(() {
+                        if (!value) {
+                          _selectedGenres.remove(genre.name);
+                        } else {
+                          _selectedGenres.add(genre.name);
+                        }
+                      });
+                    });
+              }).toList(),
+            );
+          } else if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          return Center(child: CircularProgressIndicator());
+        });
+
+    return Container(
+      decoration: BoxDecoration(border: Border(top: BorderSide(color: Theme.of(context).disabledColor))),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.min, children: <Widget>[_filterChip, _filterButton]),
+    );
+  }
+}
+
+class _FilterButton extends StatefulWidget {
+  @override
+  _FilterButtonState createState() => _FilterButtonState();
+}
+
+class _FilterButtonState extends State<_FilterButton> {
+  bool _isShow = true;
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isShow) {
+      return RaisedButton(
+          child: Text('aply filter'),
+          onPressed: () {
+            print("on ckick");
+          });
+    } else {
+      return IgnorePointer(
+          ignoring: true,
+          child: new Opacity(
+            opacity: 0.0,
+            child: Container(),
+          ));
+    }
+  }
+
+  void setVisibility(bool isShow) {
+    setState(() {
+      this._isShow = isShow;
+    });
+  }
+}
+
+class _ChipsTile extends StatelessWidget {
+  const _ChipsTile({
+    Key key,
+    this.label,
+    this.children,
+  }) : super(key: key);
+
+  final String label;
+  final List<Widget> children;
+
+  // Wraps a list of chips into a ListTile for display as a section in the demo.
+  @override
+  Widget build(BuildContext context) {
+    final List<Widget> cardChildren = <Widget>[
+      Container(
+        padding: const EdgeInsets.only(top: 16.0, bottom: 4.0),
+        alignment: Alignment.center,
+        child: Text(label, textAlign: TextAlign.start),
+      ),
+    ];
+    if (children.isNotEmpty) {
+      cardChildren.add(Wrap(
+          children: children.map<Widget>((Widget chip) {
+        return Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: chip,
+        );
+      }).toList()));
+    } else {
+      final TextStyle textStyle = Theme.of(context).textTheme.caption.copyWith(fontStyle: FontStyle.italic);
+      cardChildren.add(Semantics(
+        container: true,
+        child: Container(
+          alignment: Alignment.center,
+          constraints: const BoxConstraints(minWidth: 48.0, minHeight: 48.0),
+          padding: const EdgeInsets.all(8.0),
+          child: Text('None', style: textStyle),
+        ),
+      ));
+    }
+
+//    return Card(
+//        semanticContainer: false,
+//        child: Column(
+//          mainAxisSize: MainAxisSize.min,
+//          children: cardChildren,
+//        ));
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: cardChildren,
     );
   }
 }
