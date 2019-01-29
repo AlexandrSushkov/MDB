@@ -1,5 +1,6 @@
-import '../models/movie.dart';
 import 'dart:convert';
+
+import '../models/movie.dart';
 
 abstract class IMovieApiMapper {
   Movie parseMovie(String response);
@@ -20,6 +21,8 @@ class MovieApiMapper implements IMovieApiMapper {
     m.overview = r['overview'];
     m.posterPath = r['poster_path'];
     m.backdropPath = r['backdrop_path'];
+    m.homePage = r['homepage'];
+    m.imdb = r['imdb_id'];
     m.releaseDate = DateTime.parse(r['release_date']);
     m.tagLine = r['tagline'];
     m.revenue = r['revenue'];

@@ -1,5 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../di/di.dart';
 import '../../models/movie.dart';
@@ -8,40 +10,25 @@ import '../utils/arc_image.dart';
 import '../utils/stars_rating.dart';
 import 'movie_details_bloc.dart';
 
-class MovieDetails extends StatelessWidget {
-  MovieDetails({Key key, this.title, this.id}) : super(key: key);
+class MovieDetails extends StatefulWidget {
+  MovieDetails({Key key, this.id, this.title}) : super(key: key);
+  final int id;
+  final String title;
+
+  @override
+  _BodyState createState() => _BodyState(id: id, title: title);
+}
+
+class _BodyState extends State<MovieDetails> {
+  _BodyState({this.id, this.title});
+
   final String title;
   final int id;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: _Body(
-        id: id,
-      ),
-    );
-  }
-}
-
-class _Body extends StatefulWidget {
-  _Body({Key key, this.id}) : super(key: key);
-  final int id;
-
-  @override
-  _BodyState createState() => _BodyState(id: id);
-}
-
-class _BodyState extends State<_Body> {
-  _BodyState({this.id});
-
-  int id;
   MovieDetailsBloc bloc = MovieDetailsBloc(api: DepInj().getMovieApi());
   List<Map<String, String>> _similar = [];
   final _scrollController = ScrollController();
   final _scrollThreshold = 200.0;
+  Movie _movie;
 
   @override
   void initState() {
@@ -59,16 +46,61 @@ class _BodyState extends State<_Body> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+          actions: <Widget>[
+            IconButton(icon: const Icon(Icons.web), onPressed: _onWeb),
+            IconButton(
+              icon: const Icon(Icons.share),
+              onPressed: _onShare,
+            )
+          ],
+        ),
+        body: _getMain());
+  }
+
+  void _onWeb() async {
+    var url = Uri.encodeFull(_movie.homePage);
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext c) {
+            return AlertDialog(
+              title: new Text("App dialog"),
+              content: new Text("Can't launch browser."),
+              actions: <Widget>[
+                // usually buttons at the bottom of the dialog
+                new FlatButton(
+                  child: new Text("Close"),
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    }
+  }
+
+  void _onShare() {
+    Share.share(_movie.homePage);
+  }
+
+  Widget _getMain() {
     return StreamBuilder(
       stream: bloc.getDetailsStream(),
       builder: (BuildContext context, AsyncSnapshot<Movie> snapshot) {
         if (snapshot.hasData) {
+          _movie = snapshot.data;
           return SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  _getHeader2(snapshot.data, Theme.of(context).textTheme),
+                  _getHeader2(_movie, Theme.of(context).textTheme),
                   SizedBox(height: 10),
-                  _getOverview(snapshot.data),
+                  _getOverview(_movie),
                   SizedBox(height: 10),
                   _getImages(),
                   SizedBox(height: 10),

@@ -3,6 +3,8 @@ class Movie {
   String overview;
   String posterPath;
   String backdropPath;
+  String homePage;
+  String imdb;
   DateTime releaseDate;
   String tagLine;
   int revenue;
