@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mdb/src/bloc/movie_block.dart';
 import 'package:mdb/src/data/model/local/genre.dart';
+import 'package:mdb/src/data/model/local/genre_jo.dart';
 import 'package:mdb/src/data/model/local/movie.dart';
+import 'package:mdb/src/data/model/remote/responce/discover_response.dart';
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
 import 'package:mdb/src/data/model/remote/responce/popular_movies_responce.dart';
 import 'package:mdb/src/ui/movie_page_viver_item.dart';
@@ -29,55 +31,25 @@ class _HomeScreenState extends State<HomeScreen> {
       // disable the button
       _showBottomSheetCallback = null;
     });
-    _scaffoldKey.currentState
-        .showBottomSheet<void>((BuildContext context) {
-          final ThemeData themeData = Theme.of(context);
-          return _Filter();
-        })
-        .closed
-        .whenComplete(() {
-          if (mounted) {
-            setState(() {
-              // re-enable the button
-              _showBottomSheetCallback = _showBottomSheet;
-            });
-          }
+    _scaffoldKey.currentState.showBottomSheet<void>((BuildContext context) => _Filter()).closed.whenComplete(() {
+      if (mounted) {
+        setState(() {
+          // re-enable the button
+          _showBottomSheetCallback = _showBottomSheet;
         });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     bloc.fetchAllMovies();
+    bloc.fetchDiscover();
     bloc.fetchGenres();
     return Scaffold(
       key: _scaffoldKey,
-      body: StreamBuilder(
-        stream: bloc.popularMovies,
-        builder: (context, AsyncSnapshot<PopularMoviesResponse> snapshot) {
-          if (snapshot.hasData) {
-            return buildPageViewer(snapshot.data.movies);
-          } else if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: new Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: _showBottomSheetCallback,
-            ),
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {},
-            ),
-          ],
-        ),
-      ),
+      body: _MoviePageViewer(),
+      bottomNavigationBar: _BottomAppBar(_showBottomSheetCallback),
     );
   }
 
@@ -91,6 +63,28 @@ class _HomeScreenState extends State<HomeScreen> {
             fit: BoxFit.cover,
           );
         });
+  }
+}
+
+class _MoviePageViewer extends StatefulWidget {
+  @override
+  _MoviePageViewerState createState() => _MoviePageViewerState();
+}
+
+class _MoviePageViewerState extends State<_MoviePageViewer> {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: bloc.discoverMovies,
+      builder: (context, AsyncSnapshot<DiscoverResponse> snapshot) {
+        if (snapshot.hasData) {
+          return buildPageViewer(snapshot.data.movies);
+        } else if (snapshot.hasError) {
+          return Text(snapshot.error.toString());
+        }
+        return Center(child: CircularProgressIndicator());
+      },
+    );
   }
 
   Widget buildPageViewer(List<Movie> movies) {
@@ -106,6 +100,32 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         );
       },
+    );
+  }
+}
+
+class _BottomAppBar extends StatelessWidget {
+  _BottomAppBar(this._showBottomSheetCallback);
+
+  VoidCallback _showBottomSheetCallback;
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomAppBar(
+      child: new Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: _showBottomSheetCallback,
+          ),
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {},
+          ),
+        ],
+      ),
     );
   }
 }
@@ -128,7 +148,7 @@ class _FilterState extends State<_Filter> {
           if (snapshot.hasData) {
             return _ChipsTile(
               label: 'filter',
-              children: snapshot.data.genres.map<Widget>((Genre genre) {
+              children: snapshot.data.genres.map<Widget>((GenreJo genre) {
                 return FilterChip(
                     key: ValueKey<String>(genre.name),
                     label: Text(genre.name),
