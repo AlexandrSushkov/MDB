@@ -1,8 +1,11 @@
-import '../models/movie.dart';
-import 'movie_api_mapper.dart';
 import 'dart:async';
+
 import 'package:http/http.dart' as http;
-import '../resource/resource.dart';
+import 'package:meta/meta.dart';
+
+import '../models/movie.dart';
+import 'api_request_builder.dart';
+import 'movie_api_mapper.dart';
 
 abstract class IMovieApi {
   Future<Movie> getMovie(int id);
@@ -15,14 +18,15 @@ abstract class IMovieApi {
 }
 
 class MovieApi implements IMovieApi {
-  MovieApi({this.mapper});
+  MovieApi({@required this.mapper, @required this.client});
 
   final IMovieApiMapper mapper;
+  final http.Client client;
 
   @override
   Future<Movie> getMovie(int id) async {
-    http.Response response = await http
-        .get("https://api.themoviedb.org/3/movie/$id?api_key=" + API_KEY);
+    http.Response response =
+        await client.get(ApiRequestBuilder.getMovieUrl(id));
     if (response.statusCode == 200) {
       return mapper.parseMovie(response.body);
     } else {
@@ -32,8 +36,8 @@ class MovieApi implements IMovieApi {
 
   @override
   Future<List<String>> getMovieImages(int id) async {
-    http.Response response = await http.get(
-        "https://api.themoviedb.org/3/movie/$id/images?api_key=" + API_KEY);
+    http.Response response =
+        await client.get(ApiRequestBuilder.getMovieImagesUrl(id));
     if (response.statusCode == 200) {
       return mapper.parseImagesList(response.body);
     } else {
@@ -43,8 +47,8 @@ class MovieApi implements IMovieApi {
 
   @override
   Future<List<Map<String, String>>> getMovieCast(int id) async {
-    http.Response response = await http.get(
-        "https://api.themoviedb.org/3/movie/$id/credits?api_key=" + API_KEY);
+    http.Response response =
+        await client.get(ApiRequestBuilder.getMovieCastUrl(id));
     if (response.statusCode == 200) {
       return mapper.parseCastList(response.body);
     } else {
@@ -54,11 +58,8 @@ class MovieApi implements IMovieApi {
 
   @override
   Future<List<Map<String, String>>> getMovieSimilar(int id, int page) async {
-    http.Response response = await http.get(
-        "https://api.themoviedb.org/3/movie/$id/similar?api_key=" +
-            API_KEY +
-            "&page=" +
-            page.toString());
+    http.Response response =
+        await client.get(ApiRequestBuilder.getMovieSimilarUrl(id, page));
     if (response.statusCode == 200) {
       return mapper.parseSimilarList(response.body);
     } else {

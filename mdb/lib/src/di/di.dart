@@ -1,9 +1,10 @@
-import '../rep/movie_db_api.dart';
+import 'package:http/io_client.dart';
+
 import '../rep/movie_api_mapper.dart';
-import '../ui/movie_details/movie_details_bloc.dart';
+import '../rep/movie_db_api.dart';
 
 class DepInj {
-  static final DepInj instance = DepInj._privateconstructor();
+  static final DepInj instance = DepInj._privateConstructor();
 
   factory DepInj() {
     return instance;
@@ -12,9 +13,9 @@ class DepInj {
   IMovieApiMapper _movieApiMapper;
   IMovieApi _movieApi;
 
-  DepInj._privateconstructor() {
+  DepInj._privateConstructor() {
     _movieApiMapper = MovieApiMapper();
-    _movieApi = MovieApi(mapper: _movieApiMapper);
+    _movieApi = MovieApi(mapper: _movieApiMapper, client: IOClient());
   }
 
   IMovieApi getMovieApi() => _movieApi;
