@@ -98,19 +98,31 @@ class _BodyState extends State<MovieDetails> {
           return SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  _getHeader2(_movie, Theme.of(context).textTheme),
+                  _getHeader2(_movie, Theme.of(context)),
                   SizedBox(height: 10),
-                  _getOverview(_movie),
+                  _getOverview(_movie, Theme.of(context).textTheme),
                   SizedBox(height: 10),
                   _getImages(),
                   SizedBox(height: 10),
+                  Padding(
+                      padding: const EdgeInsets.only(left: 5),
+                      child: Text("Cast",
+                          style: Theme.of(context).textTheme.subhead.copyWith(
+                              color: Theme.of(context).colorScheme.secondary))),
+                  SizedBox(height: 5),
                   _getCast(),
                   SizedBox(height: 10),
+                  Padding(
+                      padding: const EdgeInsets.only(left: 5),
+                      child: Text("Similar movies",
+                          style: Theme.of(context).textTheme.subhead.copyWith(
+                              color: Theme.of(context).colorScheme.secondary))),
+                  SizedBox(height: 5),
                   _getSimilar()
                 ],
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
               ),
               scrollDirection: Axis.vertical);
         } else if (snapshot.hasError) {
@@ -123,19 +135,19 @@ class _BodyState extends State<MovieDetails> {
 
   _getProgressDialog() => Center(child: CircularProgressIndicator());
 
-  Widget _getHeader2(Movie m, TextTheme textTheme) {
+  Widget _getHeader2(Movie m, ThemeData themeData) {
     return Stack(
       children: <Widget>[
         Padding(
             padding: const EdgeInsets.only(bottom: 170),
             child: ArcImage(ApiConfig.apiBackdropPath + m.backdropPath, 140)),
         Positioned(
-            bottom: 0, left: 10, right: 10, child: _getHeader(m, textTheme))
+            bottom: 0, left: 10, right: 10, child: _getHeader(m, themeData))
       ],
     );
   }
 
-  Widget _getHeader(Movie m, TextTheme textTheme) {
+  Widget _getHeader(Movie m, ThemeData themeData) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
@@ -150,15 +162,15 @@ class _BodyState extends State<MovieDetails> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(m.title, style: textTheme.title),
-              Text(m.countries.join(", "), style: textTheme.body1),
+              Text(m.title, style: themeData.textTheme.title),
+              Text(m.countries.join(", "), style: themeData.textTheme.body1),
               Text(
                   m.releaseDate.year.toString() +
                       " | " +
                       m.runtime.toString() +
                       " mins",
-                  style: textTheme.body1),
-              Text('"' + m.tagLine + '"', style: textTheme.body1),
+                  style: themeData.textTheme.body1),
+              Text('"' + m.tagLine + '"', style: themeData.textTheme.body1),
               StarRating(m.voteAverage),
               Row(
                   children: m.genres.map((genre) {
@@ -166,8 +178,8 @@ class _BodyState extends State<MovieDetails> {
                     padding: const EdgeInsets.only(right: 2),
                     child: Chip(
                         label: Text(genre),
-                        backgroundColor: Colors.black12,
-                        labelStyle: textTheme.caption));
+                        backgroundColor: themeData.accentColor,
+                        labelStyle: themeData.textTheme.caption));
               }).toList())
             ],
           ),
@@ -176,11 +188,13 @@ class _BodyState extends State<MovieDetails> {
     );
   }
 
-  Widget _getOverview(Movie m) {
+  Widget _getOverview(Movie m, TextTheme textTheme) {
     bloc.loadImages(id);
     bloc.loadCast(id);
     bloc.newSimilar.add(id);
-    return Padding(padding: const EdgeInsets.all(2), child: Text(m.overview));
+    return Padding(
+        padding: const EdgeInsets.all(2),
+        child: Text(m.overview, style: textTheme.body1));
   }
 
   Widget _getImages() {
@@ -218,7 +232,7 @@ class _BodyState extends State<MovieDetails> {
           if (snapshot.hasData) {
             return Container(
                 height: 200,
-                decoration: BoxDecoration(color: Colors.blue[100]),
+//                decoration: BoxDecoration(color: Colors.blue[100]),
                 child: ListView.builder(
                     itemCount: snapshot.data.length,
                     scrollDirection: Axis.horizontal,
@@ -258,25 +272,29 @@ class _BodyState extends State<MovieDetails> {
             _similar.addAll(snapshot.data);
             return Container(
                 height: 200,
-                decoration: BoxDecoration(color: Colors.red[100]),
+//                decoration: BoxDecoration(color: Colors.red[100]),
                 child: ListView.builder(
                     itemCount: _similar.length,
                     scrollDirection: Axis.horizontal,
                     controller: _scrollController,
                     padding: const EdgeInsets.all(3),
                     itemBuilder: (context, index) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Expanded(
-                              child: Image.network(
-                                  ApiConfig.apiPosterPath +
-                                      _similar[index]['poster'],
-                                  fit: BoxFit.fill)),
-                          Text(_similar[index]['title'])
-                        ],
-                      );
+                      return Padding(
+                          padding: const EdgeInsets.all(3),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Expanded(
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(7),
+                                      child: Image.network(
+                                          ApiConfig.apiPosterPath +
+                                              _similar[index]['poster'],
+                                          fit: BoxFit.fill))),
+                              Text(_similar[index]['title'])
+                            ],
+                          ));
                     }));
           } else if (snapshot.hasError) {
             return Text(snapshot.error.toString());
