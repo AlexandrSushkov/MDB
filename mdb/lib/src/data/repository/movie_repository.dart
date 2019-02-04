@@ -13,4 +13,5 @@ class MovieRepository {
 
   Future<GenresResponse> fetchGenres() => api.fetchGenres();
 
+  Future<DiscoverResponse> fetchDiscoverByFilter(Set<int> selectedGenres) => api.fetchDiscoverByFilter(selectedGenres);
 }

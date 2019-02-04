@@ -31,7 +31,10 @@ class _HomeScreenState extends State<HomeScreen> {
       // disable the button
       _showBottomSheetCallback = null;
     });
-    _scaffoldKey.currentState.showBottomSheet<void>((BuildContext context) => _Filter()).closed.whenComplete(() {
+    _scaffoldKey.currentState
+        .showBottomSheet<void>((BuildContext context) => _Filter())
+        .closed
+        .whenComplete(() {
       if (mounted) {
         setState(() {
           // re-enable the button
@@ -59,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
         gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         itemBuilder: (BuildContext context, int index) {
           return Image.network(
-            '$imagePrefixSmall${snapshot.data.movies[index].poster_path}',
+            '$imageBaseUrl$imageSizePrefixSmall${snapshot.data.movies[index].poster_path}',
             fit: BoxFit.cover,
           );
         });
@@ -136,11 +139,11 @@ class _Filter extends StatefulWidget {
 }
 
 class _FilterState extends State<_Filter> {
-  final Set<String> _selectedGenres = Set<String>();
+  final Set<int> _selectedGenres = Set<int>();
 
   @override
   Widget build(BuildContext context) {
-    final _filterButton = _FilterButton();
+    final _filterButton = _FilterButton(_selectedGenres);
 
     final _filterChip = StreamBuilder(
         stream: bloc.genres,
@@ -152,13 +155,17 @@ class _FilterState extends State<_Filter> {
                 return FilterChip(
                     key: ValueKey<String>(genre.name),
                     label: Text(genre.name),
-                    selected: _selectedGenres.contains(genre.name),
+                    selected: _selectedGenres.contains(genre.id),
                     onSelected: (bool value) {
                       setState(() {
                         if (!value) {
-                          _selectedGenres.remove(genre.name);
+                          _selectedGenres.remove(genre.id);
+                          print("romoves ${_selectedGenres.toString()}");
+
                         } else {
-                          _selectedGenres.add(genre.name);
+                          _selectedGenres.add(genre.id);
+                          print("added ${_selectedGenres.toString()}");
+
                         }
                       });
                     });
@@ -178,12 +185,21 @@ class _FilterState extends State<_Filter> {
 }
 
 class _FilterButton extends StatefulWidget {
+  Set<int> _selectedGenres;
+
+  _FilterButton(this._selectedGenres);
+
   @override
-  _FilterButtonState createState() => _FilterButtonState();
+  _FilterButtonState createState() => _FilterButtonState(_selectedGenres);
+
 }
 
 class _FilterButtonState extends State<_FilterButton> {
+
   bool _isShow = true;
+  Set<int> _selectedGenres;
+
+  _FilterButtonState(this._selectedGenres);
 
   @override
   Widget build(BuildContext context) {
@@ -191,7 +207,8 @@ class _FilterButtonState extends State<_FilterButton> {
       return RaisedButton(
           child: Text('aply filter'),
           onPressed: () {
-            print("on ckick");
+            print('${_selectedGenres.toString()}');
+            bloc.fetchDiscoverByFilter(_selectedGenres);
           });
     } else {
       return IgnorePointer(
@@ -208,6 +225,7 @@ class _FilterButtonState extends State<_FilterButton> {
       this._isShow = isShow;
     });
   }
+
 }
 
 class _ChipsTile extends StatelessWidget {
@@ -233,13 +251,17 @@ class _ChipsTile extends StatelessWidget {
     if (children.isNotEmpty) {
       cardChildren.add(Wrap(
           children: children.map<Widget>((Widget chip) {
-        return Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: chip,
-        );
-      }).toList()));
+            return Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: chip,
+            );
+          }).toList()));
     } else {
-      final TextStyle textStyle = Theme.of(context).textTheme.caption.copyWith(fontStyle: FontStyle.italic);
+      final TextStyle textStyle = Theme
+          .of(context)
+          .textTheme
+          .caption
+          .copyWith(fontStyle: FontStyle.italic);
       cardChildren.add(Semantics(
         container: true,
         child: Container(
