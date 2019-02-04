@@ -1,7 +1,6 @@
 import 'package:mdb/src/data/model/remote/responce/discover_response.dart';
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
 import 'package:mdb/src/data/model/remote/responce/popular_movies_responce.dart';
-import 'package:mdb/src/data/repository/genre_repository.dart';
 import 'package:mdb/src/data/repository/movie_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -28,6 +27,12 @@ class MoviesBloc {
   fetchGenres() async {
     GenresResponse genresResponse = await _movieRepository.fetchGenres();
     _genreFetcher.sink.add(genresResponse);
+  }
+
+  fetchDiscoverByFilter(Set<int> selectedGenres) async {
+    DiscoverResponse genresResponse = await _movieRepository.fetchDiscoverByFilter(selectedGenres);
+    _discoverFetcher.sink.add(genresResponse);
+    print(genresResponse.toString());
   }
 
   dispose() {

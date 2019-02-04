@@ -23,7 +23,7 @@ class MovieDetailsScreen extends StatelessWidget {
               child: Container(
                 height: 300.0,
                 child: Image.network(
-                  '$imagePrefixLarge${movie.poster_path}',
+                  '$imageBaseUrl$imageSizePrefixLarge${movie.poster_path}',
                   fit: BoxFit.cover,
                 ),
               )),

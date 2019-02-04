@@ -17,7 +17,7 @@ class MoviePageViewerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var image = Image.network(
-      '$imagePrefixLarge${movie.poster_path}',
+      '$imageBaseUrl$imageSizePrefixLarge${movie.poster_path}',
       fit: BoxFit.cover,
       alignment: FractionalOffset(
         0.5 + (pageVisibility.pagePosition / 3),
@@ -64,7 +64,7 @@ class MoviePageViewerItem extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: _onPosterClick(context, movie),
-                      child: Image.network('$imagePrefixLarge${movie.poster_path}', fit: BoxFit.fitHeight),
+                      child: Image.network('$imageBaseUrl$imageSizePrefixLarge${movie.poster_path}', fit: BoxFit.fitHeight),
                     ),
                   ),
                 ),

@@ -1,4 +1,5 @@
 class Genre{
+
   int _id;
   String _name;
 
