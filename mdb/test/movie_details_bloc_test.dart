@@ -1,6 +1,6 @@
-import 'package:mdb/src/models/movie.dart';
-import 'package:mdb/src/rep/movie_db_api.dart';
-import 'package:mdb/src/ui/movie_details/movie_details_bloc.dart';
+import 'package:mdb/mysrc/models/movie.dart';
+import 'package:mdb/mysrc/rep/movie_db_api.dart';
+import 'package:mdb/mysrc/ui/movie_details/movie_details_bloc.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 

@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:mdb/src/bloc/bloc.dart';
-import 'package:mdb/src/util/preference_manager.dart';
+import 'package:mdb/mysrc/bloc/bloc.dart';
+import 'package:mdb/mysrc/util/preference_manager.dart';
 
 class SettingBloc implements BlocBase {
   final preferenceManager = PreferenceManager();

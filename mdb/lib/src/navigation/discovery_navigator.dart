@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mdb/src/ui/home_screen/dicover_screen.dart';
+import 'package:mdb/mysrc/ui/home_screen/dicover_screen.dart';
 
 class DiscoverScreenNavigator extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey = new GlobalKey();
