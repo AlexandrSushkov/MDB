@@ -1,22 +1,22 @@
 import 'package:mdb/mysrc/bloc/bloc.dart';
 import 'package:mdb/mysrc/data/model/remote/discover_response.dart';
 import 'package:mdb/mysrc/data/model/remote/genres_response.dart';
-import 'package:mdb/mysrc/data/model/remote/popular_movies_responce.dart';
+import 'package:mdb/mysrc/data/model/remote/popular_response.dart';
 import 'package:mdb/mysrc/data/repository/movie_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class MoviesBloc implements BlocBase {
   final _movieRepository = MovieRepository();
-  final _popularMoviesFetcher = PublishSubject<PopularMoviesResponse>();
+  final _popularMoviesFetcher = PublishSubject<PopularResponse>();
   final _discoverFetcher = PublishSubject<DiscoverResponse>();
   final _genreFetcher = PublishSubject<GenresResponse>();
 
-  Observable<PopularMoviesResponse> get popularMovies => _popularMoviesFetcher.stream;
+  Observable<PopularResponse> get popularMovies => _popularMoviesFetcher.stream;
   Observable<GenresResponse> get genres => _genreFetcher.stream;
   Observable<DiscoverResponse> get discoverMovies => _discoverFetcher.stream;
 
   fetchAllMovies() async {
-    PopularMoviesResponse popularMoviesResponse = await _movieRepository.fetchPopularMovies();
+    PopularResponse popularMoviesResponse = await _movieRepository.fetchPopularMovies();
     _popularMoviesFetcher.sink.add(popularMoviesResponse);
   }
 

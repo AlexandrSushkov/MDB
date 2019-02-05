@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:mdb/mysrc/data/model/remote/discover_response.dart';
 import 'package:mdb/mysrc/data/model/remote/genres_response.dart';
-import 'package:mdb/mysrc/data/model/remote/popular_movies_responce.dart';
+import 'package:mdb/mysrc/data/model/remote/popular_response.dart';
 import 'package:mdb/mysrc/utils/constants.dart';
 
 class Api {
@@ -20,10 +20,10 @@ class Api {
     }));
   }
 
-  Future<PopularMoviesResponse> fetchPopularMovies() async {
+  Future<PopularResponse> fetchPopularMovies() async {
     final response = await dio.get(popularMovies);
-    return PopularMoviesResponse();
-//    return PopularMoviesResponse.fromJson(response.data);
+    return PopularResponse();
+//    return PopularResponse.fromJson(response.data);
   }
 
   Future<GenresResponse> fetchGenres() async {

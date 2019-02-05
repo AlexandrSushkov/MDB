@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mdb/mysrc/data/model/local/movie.dart';
+import 'package:mdb/mysrc/ui/movie_details/movie_details.dart';
 import 'package:mdb/mysrc/ui/movie_details_screen.dart';
 import 'package:mdb/mysrc/utils/constants.dart';
 import 'package:mdb/mysrc/utils/wigdet/page_transformer.dart';
@@ -83,7 +84,13 @@ class MoviePageViewerItem extends StatelessWidget {
   }
 
   Future<void> _showProductDetailsPage(BuildContext context) async {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => MovieDetailsScreen(movie: movie)));
+//    Navigator.push(context, MaterialPageRoute(builder: (context) => MovieDetailsScreen(movie: movie)));
+    Route route = MaterialPageRoute(
+        builder: (context) => MovieDetails(
+              title: movie.title,
+              id: movie.id,
+            ));
+    Navigator.of(context).push(route);
   }
 
   Widget _applyTextEffects({

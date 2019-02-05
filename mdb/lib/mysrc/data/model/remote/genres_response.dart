@@ -4,9 +4,7 @@ import 'package:mdb/mysrc/data/model/local/genre.dart';
 part 'genres_response.g.dart';
 
 @JsonSerializable()
-class GenresResponse{
-
-//    GenresResponse();
+class GenresResponse {
   GenresResponse(this.genres);
 
   List<Genre> genres;
@@ -14,5 +12,4 @@ class GenresResponse{
   factory GenresResponse.fromJson(Map<String, dynamic> json) => _$GenresResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$GenresResponseToJson(this);
-
 }

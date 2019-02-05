@@ -11,10 +11,8 @@ class MovieDetailsBloc {
   bool _isLoading = false;
   StreamController<Movie> _controller = StreamController<Movie>();
   StreamController<List<String>> _imagesController = StreamController();
-  StreamController<List<Map<String, String>>> _castController =
-      StreamController();
-  StreamController<List<Map<String, String>>> _similarController =
-      StreamController();
+  StreamController<List<Map<String, String>>> _castController = StreamController();
+  StreamController<List<Map<String, String>>> _similarController = StreamController();
   StreamController<int> _newSimilar = StreamController();
 
   Stream<Movie> getDetailsStream() => _controller.stream;
@@ -23,8 +21,7 @@ class MovieDetailsBloc {
 
   Stream<List<Map<String, String>>> getCastStream() => _castController.stream;
 
-  Stream<List<Map<String, String>>> getSimilarStream() =>
-      _similarController.stream;
+  Stream<List<Map<String, String>>> getSimilarStream() => _similarController.stream;
 
   Sink<int> get newSimilar => _newSimilar.sink;
 

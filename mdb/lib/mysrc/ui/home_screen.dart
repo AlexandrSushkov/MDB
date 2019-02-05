@@ -3,7 +3,7 @@ import 'package:mdb/mysrc/data/model/local/genre.dart';
 import 'package:mdb/mysrc/data/model/local/movie.dart';
 import 'package:mdb/mysrc/data/model/remote/discover_response.dart';
 import 'package:mdb/mysrc/data/model/remote/genres_response.dart';
-import 'package:mdb/mysrc/data/model/remote/popular_movies_responce.dart';
+import 'package:mdb/mysrc/data/model/remote/popular_response.dart';
 import 'package:mdb/mysrc/ui/movie_page_viver_item.dart';
 import 'package:mdb/mysrc/utils/constants.dart';
 import 'package:mdb/mysrc/utils/wigdet/page_transformer.dart';
@@ -54,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget buildList(AsyncSnapshot<PopularMoviesResponse> snapshot) {
+  Widget buildList(AsyncSnapshot<PopularResponse> snapshot) {
     return GridView.builder(
         itemCount: snapshot.data.movies.length,
         gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
