@@ -1,7 +1,7 @@
-import 'package:mdb/src/data/model/local/genre_jo.dart';
+import 'package:mdb/mysrc/data/model/local/genre_jo.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'genres_response.g.dart';
+part 'package:mdb/mysrc/data/model/remote/responce/genres_response.g.dart';
 
 @JsonSerializable()
 class GenresResponse{

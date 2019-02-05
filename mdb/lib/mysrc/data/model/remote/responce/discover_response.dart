@@ -1,4 +1,4 @@
-import 'package:mdb/src/data/model/local/movie.dart';
+import 'package:mdb/mysrc/data/model/local/movie.dart';
 
 class DiscoverResponse{
   int _page;

@@ -1,7 +1,7 @@
-import 'package:mdb/src/data/model/remote/responce/discover_response.dart';
-import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
-import 'package:mdb/src/data/model/remote/responce/popular_movies_responce.dart';
-import 'package:mdb/src/data/repository/movie_repository.dart';
+import 'package:mdb/mysrc/data/model/remote/responce/discover_response.dart';
+import 'package:mdb/mysrc/data/model/remote/responce/genres_response.dart';
+import 'package:mdb/mysrc/data/model/remote/responce/popular_movies_responce.dart';
+import 'package:mdb/mysrc/data/repository/movie_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class MoviesBloc {
