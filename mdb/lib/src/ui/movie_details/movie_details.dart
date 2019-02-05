@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,7 +20,8 @@ class MovieDetails extends StatefulWidget {
   _BodyState createState() => _BodyState(id: id, title: title);
 }
 
-class _BodyState extends State<MovieDetails> {
+class _BodyState extends State<MovieDetails>
+    with SingleTickerProviderStateMixin {
   _BodyState({this.id, this.title});
 
   final String title;
@@ -30,17 +32,23 @@ class _BodyState extends State<MovieDetails> {
   final _scrollThreshold = 200.0;
   Movie _movie;
 
+  AnimationController controller;
+
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
     bloc.loadDetails(id);
+    controller =
+        AnimationController(duration: const Duration(seconds: 7), vsync: this);
+    controller.forward();
   }
 
   @override
   void dispose() {
     bloc.dispose();
     _similar.clear();
+    controller.dispose();
     super.dispose();
   }
 
@@ -192,9 +200,13 @@ class _BodyState extends State<MovieDetails> {
     bloc.loadImages(id);
     bloc.loadCast(id);
     bloc.newSimilar.add(id);
-    return Padding(
-        padding: const EdgeInsets.all(2),
-        child: Text(m.overview, style: textTheme.body1));
+    return SlideTransition(
+        position: controller.drive(
+            Tween<Offset>(begin: const Offset(0.5, 0.5), end: Offset.zero)
+                .chain(CurveTween(curve: Curves.elasticIn))),
+        child: Padding(
+            padding: const EdgeInsets.all(2),
+            child: Text(m.overview, style: textTheme.body1)));
   }
 
   Widget _getImages() {
