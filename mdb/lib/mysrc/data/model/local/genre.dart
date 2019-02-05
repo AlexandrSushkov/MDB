@@ -1,13 +1,17 @@
-class Genre{
+import 'package:json_annotation/json_annotation.dart';
 
-  int _id;
-  String _name;
+part 'genre.g.dart';
 
-  Genre(result){
-    this._id = result['id'];
-    this._name = result['name'];
-  }
+@JsonSerializable()
+class Genre {
 
-  int get id => _id;
-  String get name => _name;
+  Genre(this.id, this.name);
+
+  int id;
+  String name;
+
+  factory Genre.fromJson(Map<String, dynamic> json) => _$GenreFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GenreToJson(this);
+
 }

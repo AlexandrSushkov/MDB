@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'genre_jo.dart';
+part of 'genre.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-GenreJo _$GenreJoFromJson(Map<String, dynamic> json) {
-  return GenreJo(json['id'] as int, json['name'] as String);
+Genre _$GenreFromJson(Map<String, dynamic> json) {
+  return Genre(json['id'] as int, json['name'] as String);
 }
 
-Map<String, dynamic> _$GenreJoToJson(GenreJo instance) =>
+Map<String, dynamic> _$GenreToJson(Genre instance) =>
     <String, dynamic>{'id': instance.id, 'name': instance.name};

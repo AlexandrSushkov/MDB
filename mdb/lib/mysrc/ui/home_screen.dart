@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mdb/mysrc/bloc/movie_block.dart';
 import 'package:mdb/mysrc/data/model/local/genre.dart';
-import 'package:mdb/mysrc/data/model/local/genre_jo.dart';
 import 'package:mdb/mysrc/data/model/local/movie.dart';
-import 'package:mdb/mysrc/data/model/remote/responce/discover_response.dart';
-import 'package:mdb/mysrc/data/model/remote/responce/genres_response.dart';
-import 'package:mdb/mysrc/data/model/remote/responce/popular_movies_responce.dart';
+import 'package:mdb/mysrc/data/model/remote/discover_response.dart';
+import 'package:mdb/mysrc/data/model/remote/genres_response.dart';
+import 'package:mdb/mysrc/data/model/remote/popular_movies_responce.dart';
 import 'package:mdb/mysrc/ui/movie_page_viver_item.dart';
 import 'package:mdb/mysrc/utils/constants.dart';
 import 'package:mdb/mysrc/utils/wigdet/page_transformer.dart';
@@ -46,9 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bloc.fetchAllMovies();
-    bloc.fetchDiscover();
-    bloc.fetchGenres();
+//    bloc.fetchAllMovies();
+//    bloc.fetchDiscover();
+//    bloc.fetchGenres();
     return Scaffold(
       key: _scaffoldKey,
       body: _MoviePageViewer(),
@@ -78,10 +76,10 @@ class _MoviePageViewerState extends State<_MoviePageViewer> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: bloc.discoverMovies,
+//      stream: bloc.discoverMovies,
       builder: (context, AsyncSnapshot<DiscoverResponse> snapshot) {
         if (snapshot.hasData) {
-          return buildPageViewer(snapshot.data.movies);
+          return buildPageViewer(null);
         } else if (snapshot.hasError) {
           return Text(snapshot.error.toString());
         }
@@ -146,12 +144,12 @@ class _FilterState extends State<_Filter> {
     final _filterButton = _FilterButton(_selectedGenres);
 
     final _filterChip = StreamBuilder(
-        stream: bloc.genres,
+//        stream: bloc.genres,
         builder: (context, AsyncSnapshot<GenresResponse> snapshot) {
           if (snapshot.hasData) {
             return _ChipsTile(
               label: 'filter',
-              children: snapshot.data.genres.map<Widget>((GenreJo genre) {
+              children: snapshot.data.genres.map<Widget>((Genre genre) {
                 return FilterChip(
                     key: ValueKey<String>(genre.name),
                     label: Text(genre.name),
@@ -208,7 +206,7 @@ class _FilterButtonState extends State<_FilterButton> {
           child: Text('aply filter'),
           onPressed: () {
             print('${_selectedGenres.toString()}');
-            bloc.fetchDiscoverByFilter(_selectedGenres);
+//            bloc.fetchDiscoverByFilter(_selectedGenres);
           });
     } else {
       return IgnorePointer(

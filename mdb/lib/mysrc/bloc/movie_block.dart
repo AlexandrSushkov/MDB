@@ -1,10 +1,11 @@
-import 'package:mdb/mysrc/data/model/remote/responce/discover_response.dart';
-import 'package:mdb/mysrc/data/model/remote/responce/genres_response.dart';
-import 'package:mdb/mysrc/data/model/remote/responce/popular_movies_responce.dart';
+import 'package:mdb/mysrc/bloc/bloc.dart';
+import 'package:mdb/mysrc/data/model/remote/discover_response.dart';
+import 'package:mdb/mysrc/data/model/remote/genres_response.dart';
+import 'package:mdb/mysrc/data/model/remote/popular_movies_responce.dart';
 import 'package:mdb/mysrc/data/repository/movie_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-class MoviesBloc {
+class MoviesBloc implements BlocBase {
   final _movieRepository = MovieRepository();
   final _popularMoviesFetcher = PublishSubject<PopularMoviesResponse>();
   final _discoverFetcher = PublishSubject<DiscoverResponse>();
@@ -30,9 +31,8 @@ class MoviesBloc {
   }
 
   fetchDiscoverByFilter(Set<int> selectedGenres) async {
-    DiscoverResponse genresResponse = await _movieRepository.fetchDiscoverByFilter(selectedGenres);
-    _discoverFetcher.sink.add(genresResponse);
-    print(genresResponse.toString());
+    DiscoverResponse discoverResponse = await _movieRepository.fetchDiscoverByFilter(selectedGenres);
+    _discoverFetcher.sink.add(discoverResponse);
   }
 
   dispose() {
@@ -41,5 +41,3 @@ class MoviesBloc {
     _genreFetcher.close();
   }
 }
-
-final bloc = MoviesBloc();

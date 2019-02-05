@@ -1,14 +1,15 @@
-import 'package:mdb/mysrc/data/model/local/genre_jo.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:mdb/mysrc/data/model/local/genre.dart';
 
-part 'package:mdb/mysrc/data/model/remote/responce/genres_response.g.dart';
+part 'genres_response.g.dart';
 
 @JsonSerializable()
 class GenresResponse{
 
-  List<GenreJo> genres;
-
+//    GenresResponse();
   GenresResponse(this.genres);
+
+  List<Genre> genres;
 
   factory GenresResponse.fromJson(Map<String, dynamic> json) => _$GenresResponseFromJson(json);
 
