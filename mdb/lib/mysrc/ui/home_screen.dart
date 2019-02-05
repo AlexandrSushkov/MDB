@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
         gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         itemBuilder: (BuildContext context, int index) {
           return Image.network(
-            '$imageBaseUrl$imageSizePrefixSmall${snapshot.data.movies[index].poster_path}',
+            '$imageBaseUrl$imageSizePrefixSmall${snapshot.data.movies[index].posterPath}',
             fit: BoxFit.cover,
           );
         });

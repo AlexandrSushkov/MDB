@@ -20,7 +20,7 @@ DiscoverResponse _$DiscoverResponseFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$DiscoverResponseToJson(DiscoverResponse instance) =>
     <String, dynamic>{
       'page': instance.page,
-      'total_results': instance.total_results,
-      'total_pages': instance.total_pages,
+      'total_results': instance.totalResults,
+      'total_pages': instance.totalPages,
       'results': instance.movies
     };

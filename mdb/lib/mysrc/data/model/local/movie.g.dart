@@ -25,18 +25,18 @@ Movie _$MovieFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$MovieToJson(Movie instance) => <String, dynamic>{
-      'vote_count': instance.vote_count,
+      'vote_count': instance.voteCount,
       'id': instance.id,
       'video': instance.video,
-      'vote_average': instance.vote_average,
+      'vote_average': instance.voteAverage,
       'title': instance.title,
       'popularity': instance.popularity,
-      'poster_path': instance.poster_path,
-      'original_language': instance.original_language,
-      'original_title': instance.original_title,
-      'genre_ids': instance.genre_ids,
-      'backdrop_path': instance.backdrop_path,
+      'poster_path': instance.posterPath,
+      'original_language': instance.originalLanguage,
+      'original_title': instance.originalTitle,
+      'genre_ids': instance.genreIds,
+      'backdrop_path': instance.backdropPath,
       'adult': instance.adult,
       'overview': instance.overview,
-      'release_date': instance.release_date
+      'release_date': instance.releaseDate
     };
