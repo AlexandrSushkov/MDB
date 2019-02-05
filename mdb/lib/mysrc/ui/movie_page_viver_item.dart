@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mdb/src/data/model/local/movie.dart';
-import 'package:mdb/src/ui/movie_details_screen.dart';
-import 'package:mdb/src/utils/constants.dart';
-import 'package:mdb/src/utils/wigdet/page_transformer.dart';
+import 'package:mdb/mysrc/data/model/local/movie.dart';
+import 'package:mdb/mysrc/ui/movie_details_screen.dart';
+import 'package:mdb/mysrc/utils/constants.dart';
+import 'package:mdb/mysrc/utils/wigdet/page_transformer.dart';
 
 class MoviePageViewerItem extends StatelessWidget {
   MoviePageViewerItem({
