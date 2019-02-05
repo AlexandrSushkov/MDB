@@ -6,6 +6,12 @@ import 'package:mdb/mysrc/data/repository/movie_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class MoviesBloc implements BlocBase {
+
+  MoviesBloc(){
+    fetchDiscover();
+    fetchGenres();
+  }
+
   final _movieRepository = MovieRepository();
   final _popularMoviesFetcher = PublishSubject<PopularResponse>();
   final _discoverFetcher = PublishSubject<DiscoverResponse>();
@@ -40,4 +46,5 @@ class MoviesBloc implements BlocBase {
     _discoverFetcher.close();
     _genreFetcher.close();
   }
+
 }
