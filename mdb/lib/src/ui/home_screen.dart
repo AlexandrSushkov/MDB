@@ -5,8 +5,8 @@ import 'package:mdb/src/data/model/remote/discover_response.dart';
 import 'package:mdb/src/data/model/remote/genres_response.dart';
 import 'package:mdb/src/data/model/remote/popular_response.dart';
 import 'package:mdb/src/ui/movie_page_viver_item.dart';
-import 'package:mdb/src/utils/constants.dart';
-import 'package:mdb/src/utils/wigdet/page_transformer.dart';
+import 'package:mdb/src/util/constants.dart';
+import 'package:mdb/src/util/wigdet/page_transformer.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

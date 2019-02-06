@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:mdb/src/utils/constants.dart';
+import 'package:mdb/src/util/constants.dart';
 
 part 'movie.g.dart';
 
