@@ -1,5 +1,5 @@
-import 'package:mdb/mysrc/data/api/api.dart';
-import 'package:mdb/mysrc/data/model/remote/genres_response.dart';
+import 'package:mdb/src/data/api/api.dart';
+import 'package:mdb/src/data/model/remote/genres_response.dart';
 
 class GenreRepository {
 

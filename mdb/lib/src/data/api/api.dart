@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
-import 'package:mdb/mysrc/data/model/remote/discover_response.dart';
-import 'package:mdb/mysrc/data/model/remote/genres_response.dart';
-import 'package:mdb/mysrc/data/model/remote/popular_response.dart';
-import 'package:mdb/mysrc/utils/constants.dart';
+import 'package:mdb/src/data/model/remote/discover_response.dart';
+import 'package:mdb/src/data/model/remote/genres_response.dart';
+import 'package:mdb/src/data/model/remote/popular_response.dart';
+import 'package:mdb/src/utils/constants.dart';
 
 class Api {
   Dio dio = Dio();

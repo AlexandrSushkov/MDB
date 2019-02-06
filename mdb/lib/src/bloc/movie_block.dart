@@ -1,8 +1,8 @@
-import 'package:mdb/mysrc/bloc/bloc.dart';
-import 'package:mdb/mysrc/data/model/remote/discover_response.dart';
-import 'package:mdb/mysrc/data/model/remote/genres_response.dart';
-import 'package:mdb/mysrc/data/model/remote/popular_response.dart';
-import 'package:mdb/mysrc/data/repository/movie_repository.dart';
+import 'package:mdb/src/bloc/bloc.dart';
+import 'package:mdb/src/data/model/remote/discover_response.dart';
+import 'package:mdb/src/data/model/remote/genres_response.dart';
+import 'package:mdb/src/data/model/remote/popular_response.dart';
+import 'package:mdb/src/data/repository/movie_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class MoviesBloc implements BlocBase {

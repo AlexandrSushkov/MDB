@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:mdb/mysrc/data/model/local/genre.dart';
+import 'package:mdb/src/data/model/local/genre.dart';
 
 part 'genres_response.g.dart';
 

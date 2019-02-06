@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mdb/mysrc/bloc/bloc.dart';
-import 'package:mdb/mysrc/bloc/movie_block.dart';
-import 'package:mdb/mysrc/data/model/local/genre.dart';
-import 'package:mdb/mysrc/data/model/local/movie.dart';
-import 'package:mdb/mysrc/data/model/remote/discover_response.dart';
-import 'package:mdb/mysrc/data/model/remote/genres_response.dart';
-import 'package:mdb/mysrc/ui/movie_page_viver_item.dart';
-import 'package:mdb/mysrc/utils/wigdet/page_transformer.dart';
+import 'package:mdb/src/bloc/bloc.dart';
+import 'package:mdb/src/bloc/movie_block.dart';
+import 'package:mdb/src/data/model/local/genre.dart';
+import 'package:mdb/src/data/model/local/movie.dart';
+import 'package:mdb/src/data/model/remote/discover_response.dart';
+import 'package:mdb/src/data/model/remote/genres_response.dart';
+import 'package:mdb/src/ui/movie_page_viver_item.dart';
+import 'package:mdb/src/utils/wigdet/page_transformer.dart';
 
 class DiscoverScreen extends StatefulWidget {
   @override

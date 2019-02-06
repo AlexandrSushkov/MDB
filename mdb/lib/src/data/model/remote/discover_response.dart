@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:mdb/mysrc/data/model/local/movie.dart';
-import 'package:mdb/mysrc/utils/constants.dart';
+import 'package:mdb/src/data/model/local/movie.dart';
+import 'package:mdb/src/utils/constants.dart';
 
 part 'discover_response.g.dart';
 

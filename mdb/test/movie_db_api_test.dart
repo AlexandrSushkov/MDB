@@ -1,8 +1,8 @@
 import 'package:http/http.dart' as http;
-import 'package:mdb/mysrc/models/movie.dart';
-import 'package:mdb/mysrc/rep/api_request_builder.dart';
-import 'package:mdb/mysrc/rep/movie_api_mapper.dart';
-import 'package:mdb/mysrc/rep/movie_db_api.dart';
+import 'package:mdb/src/models/movie.dart';
+import 'package:mdb/src/rep/api_request_builder.dart';
+import 'package:mdb/src/rep/movie_api_mapper.dart';
+import 'package:mdb/src/rep/movie_db_api.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 

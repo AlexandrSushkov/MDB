@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mdb/mysrc/resource/theme.dart';
-import 'package:mdb/mysrc/ui/home_screen/home_screen.dart';
+import 'package:mdb/src/resource/theme.dart';
+import 'package:mdb/src/ui/home_screen/home_screen.dart';
 
 class App extends StatelessWidget {
   @override

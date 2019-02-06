@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:mdb/mysrc/data/model/local/movie.dart';
-import 'package:mdb/mysrc/ui/movie_page_viver_item.dart';
-import 'package:mdb/mysrc/utils/constants.dart';
+import 'package:mdb/src/data/model/local/movie.dart';
+import 'package:mdb/src/utils/constants.dart';
 
 class MovieDetailsScreen extends StatelessWidget {
   const MovieDetailsScreen({Key key, @required this.movie})

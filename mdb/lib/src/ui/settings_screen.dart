@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mdb/mysrc/bloc/bloc.dart';
-import 'package:mdb/mysrc/bloc/settings_bloc.dart';
+import 'package:mdb/src/bloc/bloc.dart';
+import 'package:mdb/src/bloc/settings_bloc.dart';
 
 class SettingsScreen extends StatelessWidget {
 
