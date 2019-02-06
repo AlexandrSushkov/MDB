@@ -9,16 +9,20 @@ class Api {
   Dio dio = Dio();
 
   Api() {
-    dio.interceptors.add(InterceptorsWrapper(onRequest: (RequestOptions requestOptions) {
-      requestOptions.baseUrl = baseUrl;
-      requestOptions.queryParameters.addAll({apiKey: theMovieDBApiKey});
-      print('dio request: ${requestOptions.uri.toString()}');
-    }, onResponse: (Response response) {
-      print('dio response: ${response.data}');
-    }, onError: (DioError err) {
-      print('dio error: ${err.message}');
-    }));
+    dio.interceptors.add(apiKeyInterceptor);
+    dio.interceptors.add(baseUrlInterceptor);
+    dio.interceptors.add(logInterceptor);
   }
+
+  Interceptor get apiKeyInterceptor => InterceptorsWrapper(onRequest: (RequestOptions requestOptions) {
+        requestOptions.queryParameters.addAll({apiKey: theMovieDBApiKey});
+      });
+
+  Interceptor get baseUrlInterceptor => InterceptorsWrapper(onRequest: (RequestOptions requestOptions) {
+        requestOptions.baseUrl = baseUrl;
+      });
+
+  Interceptor get logInterceptor => LogInterceptor(request: true, responseBody: true, error: true, requestHeader: false, responseHeader: false);
 
   Future<PopularResponse> fetchPopularMovies() async {
     final response = await dio.get(popularMovies);
@@ -37,7 +41,18 @@ class Api {
   }
 
   Future<DiscoverResponse> fetchDiscoverByFilter(Set<int> selectedGenres) async {
-    String selected = selectedGenres.toString().replaceAll(RegExp(r'{',), '').replaceAll(RegExp(r'}',), '');
+    String selected = selectedGenres
+        .toString()
+        .replaceAll(
+            RegExp(
+              r'{',
+            ),
+            '')
+        .replaceAll(
+            RegExp(
+              r'}',
+            ),
+            '');
 
     final response = await dio.get(discover, queryParameters: {withGenres: selected});
     return DiscoverResponse.fromJson(response.data);
