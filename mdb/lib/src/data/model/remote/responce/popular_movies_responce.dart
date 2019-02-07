@@ -1,4 +1,4 @@
-import 'package:mdb/mysrc/data/model/local/movie.dart';
+import 'package:mdb/src/data/model/local/movie.dart';
 
 class PopularMoviesResponse {
   int _page;

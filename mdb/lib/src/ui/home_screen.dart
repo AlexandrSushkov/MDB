@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:mdb/mysrc/bloc/movie_block.dart';
-import 'package:mdb/mysrc/data/model/local/genre.dart';
-import 'package:mdb/mysrc/data/model/local/genre_jo.dart';
-import 'package:mdb/mysrc/data/model/local/movie.dart';
-import 'package:mdb/mysrc/data/model/remote/responce/discover_response.dart';
-import 'package:mdb/mysrc/data/model/remote/responce/genres_response.dart';
-import 'package:mdb/mysrc/data/model/remote/responce/popular_movies_responce.dart';
-import 'package:mdb/mysrc/ui/movie_page_viver_item.dart';
-import 'package:mdb/mysrc/utils/constants.dart';
-import 'package:mdb/mysrc/utils/wigdet/page_transformer.dart';
+import 'package:mdb/src/bloc/movie_block.dart';
+import 'package:mdb/src/data/model/local/genre.dart';
+import 'package:mdb/src/data/model/local/genre_jo.dart';
+import 'package:mdb/src/data/model/local/movie.dart';
+import 'package:mdb/src/data/model/remote/responce/discover_response.dart';
+import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
+import 'package:mdb/src/data/model/remote/responce/popular_movies_responce.dart';
+import 'package:mdb/src/ui/movie_page_viver_item.dart';
+import 'package:mdb/src/utils/constants.dart';
+import 'package:mdb/src/utils/wigdet/page_transformer.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

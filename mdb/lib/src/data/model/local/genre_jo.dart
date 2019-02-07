@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'package:mdb/mysrc/data/model/local/genre_jo.g.dart';
+part 'package:mdb/src/data/model/local/genre_jo.g.dart';
 
 @JsonSerializable()
 class GenreJo{
