@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:mdb/src/bloc/bloc.dart';
-import 'package:mdb/src/bloc/movie_block.dart';
 import 'package:mdb/src/data/model/local/genre.dart';
 import 'package:mdb/src/data/model/local/movie.dart';
 import 'package:mdb/src/data/model/remote/discover_response.dart';
 import 'package:mdb/src/data/model/remote/genres_response.dart';
+import 'package:mdb/src/data/model/remote/popular_response.dart';
 import 'package:mdb/src/ui/movie_page_viver_item.dart';
+import 'package:mdb/src/util/constants.dart';
 import 'package:mdb/src/util/wigdet/page_transformer.dart';
 
-class DiscoverScreen extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   @override
-  _DiscoverScreenState createState() => _DiscoverScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _DiscoverScreenState extends State<DiscoverScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   VoidCallback _showBottomSheetCallback;
@@ -26,10 +26,13 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   void _showBottomSheet() {
     setState(() {
-//       disable the button
+      // disable the button
       _showBottomSheetCallback = null;
     });
-    _scaffoldKey.currentState.showBottomSheet<void>((BuildContext context) => _Filter()).closed.whenComplete(() {
+    _scaffoldKey.currentState
+        .showBottomSheet<void>((BuildContext context) => _Filter())
+        .closed
+        .whenComplete(() {
       if (mounted) {
         setState(() {
           // re-enable the button
@@ -41,30 +44,26 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      bloc: MoviesBloc(),
-      child: Scaffold(
-        key: _scaffoldKey,
-        backgroundColor: Colors.blue,
-        body: _MoviePageViewer(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(24.0),
-              child: FloatingActionButton(
-                onPressed: _showBottomSheetCallback,
-//                onPressed: (){print('on click');},
-                tooltip: 'Increment',
-                child: Icon(Icons.filter_list),
-                elevation: 2.0,
-              ),
-            ),
-          ],
-        ),
-      ),
+//    bloc.fetchAllMovies();
+//    bloc.fetchDiscover();
+//    bloc.fetchGenres();
+    return Scaffold(
+      key: _scaffoldKey,
+      body: _MoviePageViewer(),
+      bottomNavigationBar: _BottomAppBar(_showBottomSheetCallback),
     );
+  }
+
+  Widget buildList(AsyncSnapshot<PopularResponse> snapshot) {
+    return GridView.builder(
+        itemCount: snapshot.data.movies.length,
+        gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        itemBuilder: (BuildContext context, int index) {
+          return Image.network(
+            '$imageBaseUrl$imageSizePrefixSmall${snapshot.data.movies[index].posterPath}',
+            fit: BoxFit.cover,
+          );
+        });
   }
 }
 
@@ -76,13 +75,11 @@ class _MoviePageViewer extends StatefulWidget {
 class _MoviePageViewerState extends State<_MoviePageViewer> {
   @override
   Widget build(BuildContext context) {
-    final MoviesBloc moviesBlock = BlocProvider.of<MoviesBloc>(context);
-//    moviesBlock.fetchDiscover();
     return StreamBuilder(
-      stream: moviesBlock.discoverMovies,
+//      stream: bloc.discoverMovies,
       builder: (context, AsyncSnapshot<DiscoverResponse> snapshot) {
         if (snapshot.hasData) {
-          return buildPageViewer(snapshot.data.movies);
+          return buildPageViewer(null);
         } else if (snapshot.hasError) {
           return Text(snapshot.error.toString());
         }
@@ -108,6 +105,32 @@ class _MoviePageViewerState extends State<_MoviePageViewer> {
   }
 }
 
+class _BottomAppBar extends StatelessWidget {
+  _BottomAppBar(this._showBottomSheetCallback);
+
+  VoidCallback _showBottomSheetCallback;
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomAppBar(
+      child: new Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: _showBottomSheetCallback,
+          ),
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {},
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _Filter extends StatefulWidget {
   @override
   _FilterState createState() => _FilterState();
@@ -120,10 +143,8 @@ class _FilterState extends State<_Filter> {
   Widget build(BuildContext context) {
     final _filterButton = _FilterButton(_selectedGenres);
 
-    final MoviesBloc moviesBlock = BlocProvider.of<MoviesBloc>(context);
-//    moviesBlock.fetchGenres();
     final _filterChip = StreamBuilder(
-        stream: moviesBlock.genres,
+//        stream: bloc.genres,
         builder: (context, AsyncSnapshot<GenresResponse> snapshot) {
           if (snapshot.hasData) {
             return _ChipsTile(
@@ -138,9 +159,11 @@ class _FilterState extends State<_Filter> {
                         if (!value) {
                           _selectedGenres.remove(genre.id);
                           print("romoves ${_selectedGenres.toString()}");
+
                         } else {
                           _selectedGenres.add(genre.id);
                           print("added ${_selectedGenres.toString()}");
+
                         }
                       });
                     });
@@ -160,15 +183,17 @@ class _FilterState extends State<_Filter> {
 }
 
 class _FilterButton extends StatefulWidget {
-  _FilterButton(this._selectedGenres);
+  Set<int> _selectedGenres;
 
-  final Set<int> _selectedGenres;
+  _FilterButton(this._selectedGenres);
 
   @override
   _FilterButtonState createState() => _FilterButtonState(_selectedGenres);
+
 }
 
 class _FilterButtonState extends State<_FilterButton> {
+
   bool _isShow = true;
   Set<int> _selectedGenres;
 
@@ -176,14 +201,12 @@ class _FilterButtonState extends State<_FilterButton> {
 
   @override
   Widget build(BuildContext context) {
-    final MoviesBloc moviesBlock = BlocProvider.of<MoviesBloc>(context);
-
     if (_isShow) {
       return RaisedButton(
           child: Text('aply filter'),
           onPressed: () {
             print('${_selectedGenres.toString()}');
-            moviesBlock.fetchDiscoverByFilter(_selectedGenres);
+//            bloc.fetchDiscoverByFilter(_selectedGenres);
           });
     } else {
       return IgnorePointer(
@@ -200,6 +223,7 @@ class _FilterButtonState extends State<_FilterButton> {
       this._isShow = isShow;
     });
   }
+
 }
 
 class _ChipsTile extends StatelessWidget {
@@ -225,13 +249,17 @@ class _ChipsTile extends StatelessWidget {
     if (children.isNotEmpty) {
       cardChildren.add(Wrap(
           children: children.map<Widget>((Widget chip) {
-        return Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: chip,
-        );
-      }).toList()));
+            return Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: chip,
+            );
+          }).toList()));
     } else {
-      final TextStyle textStyle = Theme.of(context).textTheme.caption.copyWith(fontStyle: FontStyle.italic);
+      final TextStyle textStyle = Theme
+          .of(context)
+          .textTheme
+          .caption
+          .copyWith(fontStyle: FontStyle.italic);
       cardChildren.add(Semantics(
         container: true,
         child: Container(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mdb/src/navigation/discovery_navigator.dart';
 import 'package:mdb/src/resource/resource.dart';
-import 'package:mdb/src/ui/search_screen.dart';
 import 'package:mdb/src/ui/home_screen/watch_list_screen.dart';
+import 'package:mdb/src/ui/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
 
