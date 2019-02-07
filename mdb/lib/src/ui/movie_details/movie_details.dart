@@ -259,10 +259,12 @@ class _BodyState extends State<MovieDetails>
                               Expanded(
                                 child: ClipRRect(
                                     borderRadius: BorderRadius.circular(7),
-                                    child: Image.network(
-                                        ApiConfig.apiPhotoPath +
-                                            snapshot.data[index]['photo'],
-                                        fit: BoxFit.fill)),
+                                    child: snapshot.data[index]['photo'] != null
+                                        ? Image.network(
+                                            ApiConfig.apiPhotoPath +
+                                                snapshot.data[index]['photo'],
+                                            fit: BoxFit.fill)
+                                        : FlutterLogo()),
                               ),
                               Text(snapshot.data[index]['name'])
                             ],
