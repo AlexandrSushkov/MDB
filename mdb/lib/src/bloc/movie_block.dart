@@ -8,10 +8,18 @@ class MoviesBloc {
   final _movieRepository = MovieRepository();
   final _popularMoviesFetcher = PublishSubject<PopularMoviesResponse>();
   final _discoverFetcher = PublishSubject<DiscoverResponse>();
-  final _genreFetcher = PublishSubject<GenresResponse>();
+  final _genreFetcher = BehaviorSubject<GenresResponse>();
+  final Set<int> selectedGenres = Set<int>();
+
+  MoviesBloc() {
+    fetchDiscover();
+    fetchGenres();
+  }
 
   Observable<PopularMoviesResponse> get popularMovies => _popularMoviesFetcher.stream;
-  Observable<GenresResponse> get genres => _genreFetcher.stream;
+
+  Observable<Pair<GenresResponse, Set<int>>> get genres => _genreFetcher.stream.zipWith(Stream.fromIterable(selectedGenres).toSet().asStream(), (a, b) => Pair(a, b));
+
   Observable<DiscoverResponse> get discoverMovies => _discoverFetcher.stream;
 
   fetchAllMovies() async {
@@ -30,6 +38,7 @@ class MoviesBloc {
   }
 
   fetchDiscoverByFilter(Set<int> selectedGenres) async {
+    selectedGenres.addAll(selectedGenres);
     DiscoverResponse genresResponse = await _movieRepository.fetchDiscoverByFilter(selectedGenres);
     _discoverFetcher.sink.add(genresResponse);
     print(genresResponse.toString());
@@ -42,4 +51,18 @@ class MoviesBloc {
   }
 }
 
-final bloc = MoviesBloc();
+MoviesBloc _bloc;
+
+MoviesBloc get bloc {
+  if (_bloc == null) {
+    _bloc = MoviesBloc();
+  }
+  return _bloc;
+}
+
+class Pair<T1, T2> {
+  final T1 first;
+  final T2 second;
+
+  Pair(this.first, this.second);
+}

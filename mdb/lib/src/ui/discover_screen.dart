@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mdb/src/bloc/movie_block.dart';
-import 'package:mdb/src/data/model/local/genre.dart';
 import 'package:mdb/src/data/model/local/genre_jo.dart';
 import 'package:mdb/src/data/model/local/movie.dart';
 import 'package:mdb/src/data/model/remote/responce/discover_response.dart';
@@ -10,62 +9,23 @@ import 'package:mdb/src/ui/movie_page_viver_item.dart';
 import 'package:mdb/src/utils/constants.dart';
 import 'package:mdb/src/utils/wigdet/page_transformer.dart';
 
-class HomeScreen extends StatefulWidget {
+class DiscoverScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _DiscoverScreenState createState() => _DiscoverScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  VoidCallback _showBottomSheetCallback;
-
-  @override
-  void initState() {
-    super.initState();
-    _showBottomSheetCallback = _showBottomSheet;
-  }
-
-  void _showBottomSheet() {
-    setState(() {
-      // disable the button
-      _showBottomSheetCallback = null;
-    });
-    _scaffoldKey.currentState
-        .showBottomSheet<void>((BuildContext context) => _Filter())
-        .closed
-        .whenComplete(() {
-      if (mounted) {
-        setState(() {
-          // re-enable the button
-          _showBottomSheetCallback = _showBottomSheet;
-        });
-      }
-    });
-  }
-
+class _DiscoverScreenState extends State<DiscoverScreen> {
   @override
   Widget build(BuildContext context) {
-    bloc.fetchAllMovies();
-    bloc.fetchDiscover();
-    bloc.fetchGenres();
     return Scaffold(
-      key: _scaffoldKey,
       body: _MoviePageViewer(),
-      bottomNavigationBar: _BottomAppBar(_showBottomSheetCallback),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet<void>(context: context, builder: (BuildContext context) => _Filter());
+        },
+        child: Icon(Icons.filter_list),
+      ),
     );
-  }
-
-  Widget buildList(AsyncSnapshot<PopularMoviesResponse> snapshot) {
-    return GridView.builder(
-        itemCount: snapshot.data.movies.length,
-        gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-        itemBuilder: (BuildContext context, int index) {
-          return Image.network(
-            '$imageBaseUrl$imageSizePrefixSmall${snapshot.data.movies[index].poster_path}',
-            fit: BoxFit.cover,
-          );
-        });
   }
 }
 
@@ -107,32 +67,6 @@ class _MoviePageViewerState extends State<_MoviePageViewer> {
   }
 }
 
-class _BottomAppBar extends StatelessWidget {
-  _BottomAppBar(this._showBottomSheetCallback);
-
-  VoidCallback _showBottomSheetCallback;
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomAppBar(
-      child: new Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: _showBottomSheetCallback,
-          ),
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _Filter extends StatefulWidget {
   @override
   _FilterState createState() => _FilterState();
@@ -147,25 +81,27 @@ class _FilterState extends State<_Filter> {
 
     final _filterChip = StreamBuilder(
         stream: bloc.genres,
-        builder: (context, AsyncSnapshot<GenresResponse> snapshot) {
+        builder: (context, AsyncSnapshot<Pair<GenresResponse, Set<int>>> snapshot) {
           if (snapshot.hasData) {
+            _selectedGenres.clear();
+            _selectedGenres.addAll(snapshot.data.second);
             return _ChipsTile(
               label: 'filter',
-              children: snapshot.data.genres.map<Widget>((GenreJo genre) {
+              children: snapshot.data.first.genres.map<Widget>((GenreJo genre) {
                 return FilterChip(
-                    key: ValueKey<String>(genre.name),
+                    key: ValueKey<String>(genre.id.toString()),
                     label: Text(genre.name),
                     selected: _selectedGenres.contains(genre.id),
                     onSelected: (bool value) {
                       setState(() {
                         if (!value) {
+                          bloc.selectedGenres.remove(genre.id);
                           _selectedGenres.remove(genre.id);
                           print("romoves ${_selectedGenres.toString()}");
-
                         } else {
+                          bloc.selectedGenres.add(genre.id);
                           _selectedGenres.add(genre.id);
                           print("added ${_selectedGenres.toString()}");
-
                         }
                       });
                     });
@@ -191,11 +127,9 @@ class _FilterButton extends StatefulWidget {
 
   @override
   _FilterButtonState createState() => _FilterButtonState(_selectedGenres);
-
 }
 
 class _FilterButtonState extends State<_FilterButton> {
-
   bool _isShow = true;
   Set<int> _selectedGenres;
 
@@ -207,7 +141,7 @@ class _FilterButtonState extends State<_FilterButton> {
       return RaisedButton(
           child: Text('aply filter'),
           onPressed: () {
-            print('${_selectedGenres.toString()}');
+            print('apply filter: ${_selectedGenres.toString()}');
             bloc.fetchDiscoverByFilter(_selectedGenres);
           });
     } else {
@@ -225,7 +159,6 @@ class _FilterButtonState extends State<_FilterButton> {
       this._isShow = isShow;
     });
   }
-
 }
 
 class _ChipsTile extends StatelessWidget {
@@ -251,17 +184,13 @@ class _ChipsTile extends StatelessWidget {
     if (children.isNotEmpty) {
       cardChildren.add(Wrap(
           children: children.map<Widget>((Widget chip) {
-            return Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: chip,
-            );
-          }).toList()));
+        return Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: chip,
+        );
+      }).toList()));
     } else {
-      final TextStyle textStyle = Theme
-          .of(context)
-          .textTheme
-          .caption
-          .copyWith(fontStyle: FontStyle.italic);
+      final TextStyle textStyle = Theme.of(context).textTheme.caption.copyWith(fontStyle: FontStyle.italic);
       cardChildren.add(Semantics(
         container: true,
         child: Container(
