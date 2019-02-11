@@ -18,10 +18,36 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _MoviePageViewer(),
+      body: StreamBuilder(
+        stream: bloc.discoverMovies,
+        builder: (context, AsyncSnapshot<DiscoverResponse> snapshot) {
+          if (snapshot.data.movies.length == 0) {
+            return Center(child: Text("movies not found."));
+          }
+          if (snapshot.hasData) {
+            return PageTransformer(
+              pageViewBuilder: (context, pageVisibilityResolver) {
+                return PageView.builder(
+                  controller: PageController(viewportFraction: 0.85, initialPage: 0, keepPage: false),
+                  itemCount: snapshot.data.movies.length,
+                  itemBuilder: (context, index) {
+                    final item = snapshot.data.movies[index];
+                    final pageVisibility = pageVisibilityResolver.resolvePageVisibility(index);
+                    return MoviePageViewerItem(movie: item, pageVisibility: pageVisibility);
+                  },
+                );
+              },
+            );
+          } else if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          return Center(child: CircularProgressIndicator());
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet<void>(context: context, builder: (BuildContext context) => _Filter());
+
         },
         child: Icon(Icons.filter_list),
       ),
@@ -40,8 +66,23 @@ class _MoviePageViewerState extends State<_MoviePageViewer> {
     return StreamBuilder(
       stream: bloc.discoverMovies,
       builder: (context, AsyncSnapshot<DiscoverResponse> snapshot) {
+        if (snapshot.data.movies.length == 0) {
+          return Center(child: Text("movies not found."));
+        }
         if (snapshot.hasData) {
-          return buildPageViewer(snapshot.data.movies);
+          return PageTransformer(
+            pageViewBuilder: (context, pageVisibilityResolver) {
+              return PageView.builder(
+                controller: PageController(viewportFraction: 0.85, initialPage: 0),
+                itemCount: snapshot.data.movies.length,
+                itemBuilder: (context, index) {
+                  final item = snapshot.data.movies[index];
+                  final pageVisibility = pageVisibilityResolver.resolvePageVisibility(index);
+                  return MoviePageViewerItem(movie: item, pageVisibility: pageVisibility);
+                },
+              );
+            },
+          );
         } else if (snapshot.hasError) {
           return Text(snapshot.error.toString());
         }
@@ -50,21 +91,21 @@ class _MoviePageViewerState extends State<_MoviePageViewer> {
     );
   }
 
-  Widget buildPageViewer(List<Movie> movies) {
-    return PageTransformer(
-      pageViewBuilder: (context, pageVisibilityResolver) {
-        return PageView.builder(
-          controller: PageController(viewportFraction: 0.85),
-          itemCount: movies.length,
-          itemBuilder: (context, index) {
-            final item = movies[index];
-            final pageVisibility = pageVisibilityResolver.resolvePageVisibility(index);
-            return MoviePageViewerItem(movie: item, pageVisibility: pageVisibility);
-          },
-        );
-      },
-    );
-  }
+//  Widget buildPageViewer(List<Movie> movies) {
+//    return PageTransformer(
+//      pageViewBuilder: (context, pageVisibilityResolver) {
+//        return PageView.builder(
+//          controller: PageController(viewportFraction: 0.85),
+//          itemCount: movies.length,
+//          itemBuilder: (context, index) {
+//            final item = movies[index];
+//            final pageVisibility = pageVisibilityResolver.resolvePageVisibility(index);
+//            return MoviePageViewerItem(movie: item, pageVisibility: pageVisibility);
+//          },
+//        );
+//      },
+//    );
+//  }
 }
 
 class _Filter extends StatefulWidget {
@@ -143,6 +184,7 @@ class _FilterButtonState extends State<_FilterButton> {
           onPressed: () {
             print('apply filter: ${_selectedGenres.toString()}');
             bloc.fetchDiscoverByFilter(_selectedGenres);
+            Navigator.pop(context);
           });
     } else {
       return IgnorePointer(

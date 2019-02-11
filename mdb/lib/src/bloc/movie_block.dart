@@ -38,10 +38,15 @@ class MoviesBloc {
   }
 
   fetchDiscoverByFilter(Set<int> selectedGenres) async {
-    selectedGenres.addAll(selectedGenres);
-    DiscoverResponse genresResponse = await _movieRepository.fetchDiscoverByFilter(selectedGenres);
-    _discoverFetcher.sink.add(genresResponse);
-    print(genresResponse.toString());
+    if(selectedGenres.length == 0){
+      fetchDiscover();
+    }else{
+      selectedGenres.addAll(selectedGenres);
+      DiscoverResponse genresResponse = await _movieRepository.fetchDiscoverByFilter(selectedGenres);
+      _discoverFetcher.sink.add(genresResponse);
+      print(genresResponse.toString());
+    }
+
   }
 
   dispose() {
