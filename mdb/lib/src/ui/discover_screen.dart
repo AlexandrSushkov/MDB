@@ -21,23 +21,24 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       body: StreamBuilder(
         stream: bloc.discoverMovies,
         builder: (context, AsyncSnapshot<DiscoverResponse> snapshot) {
-          if (snapshot.data.movies.length == 0) {
-            return Center(child: Text("movies not found."));
-          }
           if (snapshot.hasData) {
-            return PageTransformer(
-              pageViewBuilder: (context, pageVisibilityResolver) {
-                return PageView.builder(
-                  controller: PageController(viewportFraction: 0.85, initialPage: 0, keepPage: false),
-                  itemCount: snapshot.data.movies.length,
-                  itemBuilder: (context, index) {
-                    final item = snapshot.data.movies[index];
-                    final pageVisibility = pageVisibilityResolver.resolvePageVisibility(index);
-                    return MoviePageViewerItem(movie: item, pageVisibility: pageVisibility);
-                  },
-                );
-              },
-            );
+            if (snapshot.data.movies.length == 0) {
+              return Center(child: Text("movies not found."));
+            }else{
+              return PageTransformer(
+                pageViewBuilder: (context, pageVisibilityResolver) {
+                  return PageView.builder(
+                    controller: PageController(viewportFraction: 0.85, initialPage: 0, keepPage: false),
+                    itemCount: snapshot.data.movies.length,
+                    itemBuilder: (context, index) {
+                      final item = snapshot.data.movies[index];
+                      final pageVisibility = pageVisibilityResolver.resolvePageVisibility(index);
+                      return MoviePageViewerItem(movie: item, pageVisibility: pageVisibility);
+                    },
+                  );
+                },
+              );
+            }
           } else if (snapshot.hasError) {
             return Text(snapshot.error.toString());
           }
