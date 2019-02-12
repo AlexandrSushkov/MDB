@@ -49,34 +49,15 @@ class MoviePageViewerItem extends StatelessWidget {
           horizontal: 8.0,
         ),
         child: Hero(
-          tag: movie.id,
-          child: Card(
-            elevation: 8.0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(_cornerRadius),
-            ),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(_cornerRadius),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: _onPosterClick(context, movie),
-                      child: Image.network('$imageBaseUrl$imageSizePrefixLarge${movie.poster_path}', fit: BoxFit.fitHeight),
-                    ),
-                  ),
-                ),
-//                imageOverlayGradient,
-                _buildTextContainer(context),
-                Material(
-                  type: MaterialType.transparency,
-                  child: InkWell(onTap: () {
-                    _showProductDetailsPage(context);
-                  }),
-                ),
-              ],
+          tag: 'poster${movie.id}',
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(_cornerRadius),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: _onPosterClick(context, movie),
+                child: Image.network('$imageBaseUrl$imageSizePrefixLarge${movie.poster_path}', fit: BoxFit.fitHeight),
+              ),
             ),
           ),
         ));
