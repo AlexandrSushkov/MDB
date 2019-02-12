@@ -71,11 +71,20 @@ class MovieDetailsScreen extends StatelessWidget {
                 children: <Widget>[
                   Hero(
                     tag: 'poster${movie.id}',
-                    child: Container(
-                      height: 200.0,
-                      width: 150.0,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(image: NetworkImage('$imageBaseUrl$imageSizePrefixLarge${movie.poster_path}'), fit: BoxFit.cover),
+                    child: Card(
+                      elevation: 8.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: Container(
+                          height: 200.0,
+                          width: 150.0,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(image: NetworkImage('$imageBaseUrl$imageSizePrefixLarge${movie.poster_path}'), fit: BoxFit.cover),
+                          ),
+                        ),
                       ),
                     ),
                   ),
