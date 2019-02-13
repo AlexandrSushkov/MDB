@@ -73,7 +73,7 @@ class MoviePageViewerItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                _buildTextContainer(context),
+//                _buildTextContainer(context),
                 Material(
                   type: MaterialType.transparency,
                   child: InkWell(onTap: () {

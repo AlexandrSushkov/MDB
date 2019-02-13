@@ -18,39 +18,53 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder(
-        stream: bloc.discoverMovies,
-        builder: (context, AsyncSnapshot<DiscoverResponse> snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data.movies.length == 0) {
-              return Center(child: Text("movies not found."));
-            }else{
-              return PageTransformer(
-                pageViewBuilder: (context, pageVisibilityResolver) {
-                  return PageView.builder(
-                    controller: PageController(viewportFraction: 0.85, initialPage: 0, keepPage: false),
-                    itemCount: snapshot.data.movies.length,
-                    itemBuilder: (context, index) {
-                      final item = snapshot.data.movies[index];
-                      final pageVisibility = pageVisibilityResolver.resolvePageVisibility(index);
-                      return MoviePageViewerItem(movie: item, pageVisibility: pageVisibility);
-                    },
-                  );
-                },
-              );
-            }
-          } else if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet<void>(context: context, builder: (BuildContext context) => _Filter());
-
-        },
-        child: Icon(Icons.filter_list),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: StreamBuilder(
+              stream: bloc.discoverMovies,
+              builder: (context, AsyncSnapshot<DiscoverResponse> snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data.movies.length == 0) {
+                    return Center(child: Text("movies not found."));
+                  } else {
+                    return PageTransformer(
+                      pageViewBuilder: (context, pageVisibilityResolver) {
+                        return PageView.builder(
+                          controller: PageController(viewportFraction: 0.85, initialPage: 0, keepPage: false),
+                          itemCount: snapshot.data.movies.length,
+                          itemBuilder: (context, index) {
+                            final item = snapshot.data.movies[index];
+                            final pageVisibility = pageVisibilityResolver.resolvePageVisibility(index);
+                            return MoviePageViewerItem(movie: item, pageVisibility: pageVisibility);
+                          },
+                        );
+                      },
+                    );
+                  }
+                } else if (snapshot.hasError) {
+                  return Text(snapshot.error.toString());
+                }
+                return Center(child: CircularProgressIndicator());
+              },
+            ),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0, bottom: 8.0),
+                child: IconButton(
+                  icon: Icon(Icons.filter_list),
+                  onPressed: () {
+                    showModalBottomSheet<void>(context: context, builder: (BuildContext context) => _Filter());
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -121,12 +135,14 @@ class _FilterState extends State<_Filter> {
   Widget build(BuildContext context) {
     final _filterButton = _FilterButton(_selectedGenres);
 
+  //todo rewrite this chip tile, it cause of  ui lags.
     final _filterChip = StreamBuilder(
         stream: bloc.genres,
         builder: (context, AsyncSnapshot<Pair<GenresResponse, Set<int>>> snapshot) {
           if (snapshot.hasData) {
             _selectedGenres.clear();
             _selectedGenres.addAll(snapshot.data.second);
+            print('return chipTile');
             return _ChipsTile(
               label: 'filter',
               children: snapshot.data.first.genres.map<Widget>((GenreJo genre) {
@@ -157,7 +173,16 @@ class _FilterState extends State<_Filter> {
 
     return Container(
       decoration: BoxDecoration(border: Border(top: BorderSide(color: Theme.of(context).disabledColor))),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.min, children: <Widget>[_filterChip, _filterButton]),
+      child: SingleChildScrollView(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
+          _filterChip,
+//        Container(
+//          height: 300.0,
+//          color: Colors.blue,
+//        ),
+        _filterButton
+        ]),
+      ),
     );
   }
 }
