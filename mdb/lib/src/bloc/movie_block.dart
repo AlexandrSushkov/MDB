@@ -1,25 +1,26 @@
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
 import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
 import 'package:mdb/src/data/repository/movie_repository.dart';
+import 'package:mdb/src/utils/pair.dart';
 import 'package:rxdart/rxdart.dart';
 
-class MoviesBloc {
+class DiscoverScreenBloc {
+
+  DiscoverScreenBloc() {
+    fetchDiscover();
+    fetchGenres();
+  }
+
   final _movieRepository = MovieRepository();
   final _popularMoviesFetcher = PublishSubject<MovieListResponse>();
   final _discoverFetcher = PublishSubject<MovieListResponse>();
   final _genreFetcher = BehaviorSubject<GenresResponse>();
   final Set<int> selectedGenres = Set<int>();
 
-  MoviesBloc() {
-    fetchDiscover();
-    fetchGenres();
-  }
 
+  // Outputs
   Observable<MovieListResponse> get popularMovies => _popularMoviesFetcher.stream;
-
-  Observable<Pair<GenresResponse, Set<int>>> get genres =>
-      _genreFetcher.stream.zipWith(Stream.fromIterable(selectedGenres).toSet().asStream(), (a, b) => Pair(a, b));
-
+  Observable<Pair<GenresResponse, Set<int>>> get genres => _genreFetcher.stream.zipWith(Stream.fromIterable(selectedGenres).toSet().asStream(), (a, b) => Pair(a, b));
   Observable<MovieListResponse> get discoverMovies => _discoverFetcher.stream;
 
   fetchPopularMovies() async {
@@ -55,18 +56,11 @@ class MoviesBloc {
   }
 }
 
-MoviesBloc _bloc;
+DiscoverScreenBloc _bloc;
 
-MoviesBloc get bloc {
+DiscoverScreenBloc get bloc {
   if (_bloc == null) {
-    _bloc = MoviesBloc();
+    _bloc = DiscoverScreenBloc();
   }
   return _bloc;
-}
-
-class Pair<T1, T2> {
-  final T1 first;
-  final T2 second;
-
-  Pair(this.first, this.second);
 }

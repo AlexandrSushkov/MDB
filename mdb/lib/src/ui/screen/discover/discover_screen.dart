@@ -3,6 +3,7 @@ import 'package:mdb/src/bloc/movie_block.dart';
 import 'package:mdb/src/data/model/local/genre.dart';
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
 import 'package:mdb/src/ui/screen/discover/widget/movie_page_viewer.dart';
+import 'package:mdb/src/utils/pair.dart';
 
 class DiscoverScreen extends StatefulWidget {
   @override
@@ -61,11 +62,11 @@ class _FilterState extends State<_Filter> {
         builder: (context, AsyncSnapshot<Pair<GenresResponse, Set<int>>> snapshot) {
           if (snapshot.hasData) {
             _selectedGenres.clear();
-            _selectedGenres.addAll(snapshot.data.second);
+            _selectedGenres.addAll(snapshot.data.item2);
             print('return chipTile');
             return _ChipsTile(
               label: 'filter',
-              children: snapshot.data.first.genres.map<Widget>((Genre genre) {
+              children: snapshot.data.item1.genres.map<Widget>((Genre genre) {
                 return FilterChip(
                     key: ValueKey<String>(genre.id.toString()),
                     label: Text(genre.name),
