@@ -20,3 +20,4 @@ class MovieListResponse {
 
   Map<String, dynamic> toJson() => _$MovieListResponseToJson(this);
 }
+

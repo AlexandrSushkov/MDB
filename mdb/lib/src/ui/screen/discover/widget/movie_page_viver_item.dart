@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mdb/src/data/model/local/movie.dart';
-import 'package:mdb/src/ui/movie_details_screen.dart';
+import 'package:mdb/src/ui/screen/movie_details/movie_details_screen.dart';
 import 'package:mdb/src/utils/constants.dart';
 import 'package:mdb/src/utils/wigdet/page_transformer.dart';
 

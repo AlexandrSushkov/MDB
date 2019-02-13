@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mdb/src/ui/discover_screen.dart';
+import 'package:mdb/src/ui/screen/discover/discover_screen.dart';
 
 class App extends StatelessWidget {
   @override

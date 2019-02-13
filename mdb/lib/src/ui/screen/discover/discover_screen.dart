@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mdb/src/bloc/movie_block.dart';
 import 'package:mdb/src/data/model/local/genre.dart';
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
-import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
-import 'package:mdb/src/ui/movie_page_viver_item.dart';
-import 'package:mdb/src/utils/wigdet/page_transformer.dart';
+import 'package:mdb/src/ui/screen/discover/widget/movie_page_viewer.dart';
 
 class DiscoverScreen extends StatefulWidget {
   @override
@@ -14,110 +12,35 @@ class DiscoverScreen extends StatefulWidget {
 class _DiscoverScreenState extends State<DiscoverScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: StreamBuilder(
-              stream: bloc.discoverMovies,
-              builder: (context, AsyncSnapshot<MovieListResponse> snapshot) {
-                if (snapshot.hasData) {
-                  if (snapshot.data.movies.length == 0) {
-                    return Center(child: Text("movies not found."));
-                  } else {
-                    return PageTransformer(
-                      pageViewBuilder: (context, pageVisibilityResolver) {
-                        return PageView.builder(
-                          controller: PageController(viewportFraction: 0.85, initialPage: 0, keepPage: false),
-                          itemCount: snapshot.data.movies.length,
-                          itemBuilder: (context, index) {
-                            final item = snapshot.data.movies[index];
-                            final pageVisibility = pageVisibilityResolver.resolvePageVisibility(index);
-                            return MoviePageViewerItem(movie: item, pageVisibility: pageVisibility);
-                          },
-                        );
-                      },
-                    );
-                  }
-                } else if (snapshot.hasError) {
-                  return Text(snapshot.error.toString());
-                }
-                return Center(child: CircularProgressIndicator());
-              },
-            ),
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 16.0, bottom: 8.0),
-                child: IconButton(
-                  icon: Icon(Icons.filter_list),
-                  onPressed: () {
-                    showModalBottomSheet<void>(context: context, builder: (BuildContext context) => _Filter());
-                  },
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+    return Scaffold(body: _body());
+  }
+
+  Widget _body() {
+    return Column(
+      children: <Widget>[
+        MoviePageViewer(),
+        _filterNavigation()
+      ],
     );
   }
-}
 
-class _MoviePageViewer extends StatefulWidget {
-  @override
-  _MoviePageViewerState createState() => _MoviePageViewerState();
-}
-
-class _MoviePageViewerState extends State<_MoviePageViewer> {
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: bloc.discoverMovies,
-      builder: (context, AsyncSnapshot<MovieListResponse> snapshot) {
-        if (snapshot.data.movies.length == 0) {
-          return Center(child: Text("movies not found."));
-        }
-        if (snapshot.hasData) {
-          return PageTransformer(
-            pageViewBuilder: (context, pageVisibilityResolver) {
-              return PageView.builder(
-                controller: PageController(viewportFraction: 0.85, initialPage: 0),
-                itemCount: snapshot.data.movies.length,
-                itemBuilder: (context, index) {
-                  final item = snapshot.data.movies[index];
-                  final pageVisibility = pageVisibilityResolver.resolvePageVisibility(index);
-                  return MoviePageViewerItem(movie: item, pageVisibility: pageVisibility);
-                },
-              );
+  Widget _filterNavigation() {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(right: 16.0, bottom: 8.0),
+          child: IconButton(
+            icon: Icon(Icons.filter_list),
+            onPressed: () {
+              showModalBottomSheet<void>(context: context, builder: (BuildContext context) => _Filter());
             },
-          );
-        } else if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
-        }
-        return Center(child: CircularProgressIndicator());
-      },
+          ),
+        ),
+      ],
     );
   }
-
-//  Widget buildPageViewer(List<Movie> movies) {
-//    return PageTransformer(
-//      pageViewBuilder: (context, pageVisibilityResolver) {
-//        return PageView.builder(
-//          controller: PageController(viewportFraction: 0.85),
-//          itemCount: movies.length,
-//          itemBuilder: (context, index) {
-//            final item = movies[index];
-//            final pageVisibility = pageVisibilityResolver.resolvePageVisibility(index);
-//            return MoviePageViewerItem(movie: item, pageVisibility: pageVisibility);
-//          },
-//        );
-//      },
-//    );
-//  }
 }
 
 class _Filter extends StatefulWidget {
