@@ -1,8 +1,8 @@
 import 'dart:async';
+
 import 'package:dio/dio.dart';
-import 'package:mdb/src/data/model/remote/responce/discover_response.dart';
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
-import 'package:mdb/src/data/model/remote/responce/popular_movies_responce.dart';
+import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
 import 'package:mdb/src/utils/constants.dart';
 
 class Api {
@@ -24,9 +24,9 @@ class Api {
 
   Interceptor get logInterceptor => LogInterceptor(request: true, responseBody: true, error: true, requestHeader: false, responseHeader: false);
 
-  Future<PopularMoviesResponse> fetchPopularMovies() async {
+  Future<MovieListResponse> fetchPopularMovies() async {
     final response = await dio.get(popularMovies);
-    return PopularMoviesResponse.fromJson(response.data);
+    return MovieListResponse.fromJson(response.data);
   }
 
   Future<GenresResponse> fetchGenres() async {
@@ -34,12 +34,12 @@ class Api {
     return GenresResponse.fromJson(response.data);
   }
 
-  Future<DiscoverResponse> fetchDiscover() async {
+  Future<MovieListResponse> fetchDiscover() async {
     final response = await dio.get(discover);
-    return DiscoverResponse.fromJson(response.data);
+    return MovieListResponse.fromJson(response.data);
   }
 
-  Future<DiscoverResponse> fetchDiscoverByFilter(Set<int> selectedGenres) async {
+  Future<MovieListResponse> fetchDiscoverByFilter(Set<int> selectedGenres) async {
     String selected = selectedGenres
         .toString()
         .replaceAll(
@@ -54,6 +54,6 @@ class Api {
             '');
 
     final response = await dio.get(discover, queryParameters: {withGenres: selected});
-    return DiscoverResponse.fromJson(response.data);
+    return MovieListResponse.fromJson(response.data);
   }
 }

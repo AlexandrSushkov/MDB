@@ -47,7 +47,7 @@ class MovieDetailsScreen extends StatelessWidget {
         Container(
             height: 200.0,
             decoration:
-                BoxDecoration(image: DecorationImage(image: NetworkImage('$imageBaseUrl$imageSizePrefixLarge${movie.backdrop_path}'), fit: BoxFit.cover))),
+                BoxDecoration(image: DecorationImage(image: NetworkImage('$imageBaseUrl$imageSizePrefixLarge${movie.backdropPath}'), fit: BoxFit.cover))),
         Container(
           height: 200.0,
           decoration: BoxDecoration(
@@ -82,7 +82,7 @@ class MovieDetailsScreen extends StatelessWidget {
                           height: 200.0,
                           width: 150.0,
                           decoration: BoxDecoration(
-                            image: DecorationImage(image: NetworkImage('$imageBaseUrl$imageSizePrefixLarge${movie.poster_path}'), fit: BoxFit.cover),
+                            image: DecorationImage(image: NetworkImage('$imageBaseUrl$imageSizePrefixLarge${movie.posterPath}'), fit: BoxFit.cover),
                           ),
                         ),
                       ),
@@ -148,7 +148,7 @@ class MovieDetailsScreen extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(4.0),
                   child: Image.network(
-                    '$imageBaseUrl$imageSizePrefixLarge${movie.poster_path}',
+                    '$imageBaseUrl$imageSizePrefixLarge${movie.posterPath}',
                     fit: BoxFit.cover,
                   ),
                 ),

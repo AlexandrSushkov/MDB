@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mdb/src/bloc/movie_block.dart';
-import 'package:mdb/src/data/model/local/genre_jo.dart';
-import 'package:mdb/src/data/model/local/movie.dart';
-import 'package:mdb/src/data/model/remote/responce/discover_response.dart';
+import 'package:mdb/src/data/model/local/genre.dart';
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
-import 'package:mdb/src/data/model/remote/responce/popular_movies_responce.dart';
+import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
 import 'package:mdb/src/ui/movie_page_viver_item.dart';
-import 'package:mdb/src/utils/constants.dart';
 import 'package:mdb/src/utils/wigdet/page_transformer.dart';
 
 class DiscoverScreen extends StatefulWidget {
@@ -23,7 +20,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           Expanded(
             child: StreamBuilder(
               stream: bloc.discoverMovies,
-              builder: (context, AsyncSnapshot<DiscoverResponse> snapshot) {
+              builder: (context, AsyncSnapshot<MovieListResponse> snapshot) {
                 if (snapshot.hasData) {
                   if (snapshot.data.movies.length == 0) {
                     return Center(child: Text("movies not found."));
@@ -80,7 +77,7 @@ class _MoviePageViewerState extends State<_MoviePageViewer> {
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: bloc.discoverMovies,
-      builder: (context, AsyncSnapshot<DiscoverResponse> snapshot) {
+      builder: (context, AsyncSnapshot<MovieListResponse> snapshot) {
         if (snapshot.data.movies.length == 0) {
           return Center(child: Text("movies not found."));
         }
@@ -135,7 +132,7 @@ class _FilterState extends State<_Filter> {
   Widget build(BuildContext context) {
     final _filterButton = _FilterButton(_selectedGenres);
 
-  //todo rewrite this chip tile, it cause of  ui lags.
+    //todo rewrite this chip tile, it cause of  ui lags.
     final _filterChip = StreamBuilder(
         stream: bloc.genres,
         builder: (context, AsyncSnapshot<Pair<GenresResponse, Set<int>>> snapshot) {
@@ -145,7 +142,7 @@ class _FilterState extends State<_Filter> {
             print('return chipTile');
             return _ChipsTile(
               label: 'filter',
-              children: snapshot.data.first.genres.map<Widget>((GenreJo genre) {
+              children: snapshot.data.first.genres.map<Widget>((Genre genre) {
                 return FilterChip(
                     key: ValueKey<String>(genre.id.toString()),
                     label: Text(genre.name),
@@ -180,7 +177,7 @@ class _FilterState extends State<_Filter> {
 //          height: 300.0,
 //          color: Colors.blue,
 //        ),
-        _filterButton
+          _filterButton
         ]),
       ),
     );
