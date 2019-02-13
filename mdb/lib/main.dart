@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mdb/src/app.dart';
+import 'package:mdb/src/bloc/base/block_provider.dart';
 
-void main() {
-//  debugPaintSizeEnabled=true; // visualize layout fo debug
-  runApp(App());
-}
-
+void main() => runApp(App());

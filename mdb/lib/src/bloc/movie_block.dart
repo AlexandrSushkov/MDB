@@ -1,10 +1,11 @@
+import 'package:mdb/src/bloc/base/block_provider.dart';
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
 import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
 import 'package:mdb/src/data/repository/movie_repository.dart';
 import 'package:mdb/src/utils/pair.dart';
 import 'package:rxdart/rxdart.dart';
 
-class DiscoverScreenBloc {
+class DiscoverScreenBloc implements BlocBase {
 
   DiscoverScreenBloc() {
     fetchDiscover();
@@ -17,11 +18,17 @@ class DiscoverScreenBloc {
   final _genreFetcher = BehaviorSubject<GenresResponse>();
   final Set<int> selectedGenres = Set<int>();
 
-
   // Outputs
   Observable<MovieListResponse> get popularMovies => _popularMoviesFetcher.stream;
   Observable<Pair<GenresResponse, Set<int>>> get genres => _genreFetcher.stream.zipWith(Stream.fromIterable(selectedGenres).toSet().asStream(), (a, b) => Pair(a, b));
   Observable<MovieListResponse> get discoverMovies => _discoverFetcher.stream;
+
+  @override
+  void dispose() {
+    _popularMoviesFetcher.close();
+    _discoverFetcher.close();
+    _genreFetcher.close();
+  }
 
   fetchPopularMovies() async {
     MovieListResponse popularMoviesResponse = await _movieRepository.fetchPopularMovies();
@@ -49,11 +56,6 @@ class DiscoverScreenBloc {
     }
   }
 
-  dispose() {
-    _popularMoviesFetcher.close();
-    _discoverFetcher.close();
-    _genreFetcher.close();
-  }
 }
 
 DiscoverScreenBloc _bloc;
