@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mdb/src/bloc/movie_block.dart';
+import 'package:mdb/src/bloc/base/block_provider.dart';
+import 'package:mdb/src/bloc/discover_block.dart';
 import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
 import 'package:mdb/src/ui/screen/discover/widget/movie_page_viver_item.dart';
 import 'package:mdb/src/utils/wigdet/page_transformer.dart';
@@ -14,7 +15,7 @@ class _MoviePageViewerState extends State<MoviePageViewer> {
   Widget build(BuildContext context) {
     return Expanded(
       child: StreamBuilder(
-        stream: bloc.discoverMovies,
+        stream: BlocProvider.of<DiscoverScreenBloc>(context).discoverMovies,
         builder: (context, AsyncSnapshot<MovieListResponse> snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data.movies.length == 0) {

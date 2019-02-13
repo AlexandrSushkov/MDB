@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mdb/src/bloc/movie_block.dart';
+import 'package:mdb/src/bloc/base/block_provider.dart';
+import 'package:mdb/src/bloc/discover_block.dart';
 import 'package:mdb/src/data/model/local/genre.dart';
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
 import 'package:mdb/src/ui/screen/discover/widget/movie_page_viewer.dart';
@@ -13,15 +14,12 @@ class DiscoverScreen extends StatefulWidget {
 class _DiscoverScreenState extends State<DiscoverScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _body());
+    return BlocProvider(bloc: discoverBloc, child: Scaffold(body: _body()));
   }
 
   Widget _body() {
     return Column(
-      children: <Widget>[
-        MoviePageViewer(),
-        _filterNavigation()
-      ],
+      children: <Widget>[MoviePageViewer(), _filterNavigation()],
     );
   }
 
@@ -58,7 +56,7 @@ class _FilterState extends State<_Filter> {
 
     //todo rewrite this chip tile, it cause of  ui lags.
     final _filterChip = StreamBuilder(
-        stream: bloc.genres,
+        stream: BlocProvider.of<DiscoverScreenBloc>(context).genres,
         builder: (context, AsyncSnapshot<Pair<GenresResponse, Set<int>>> snapshot) {
           if (snapshot.hasData) {
             _selectedGenres.clear();
@@ -74,11 +72,11 @@ class _FilterState extends State<_Filter> {
                     onSelected: (bool value) {
                       setState(() {
                         if (!value) {
-                          bloc.selectedGenres.remove(genre.id);
+                          BlocProvider.of<DiscoverScreenBloc>(context).selectedGenres.remove(genre.id);
                           _selectedGenres.remove(genre.id);
                           print("romoves ${_selectedGenres.toString()}");
                         } else {
-                          bloc.selectedGenres.add(genre.id);
+                          BlocProvider.of<DiscoverScreenBloc>(context).selectedGenres.add(genre.id);
                           _selectedGenres.add(genre.id);
                           print("added ${_selectedGenres.toString()}");
                         }
@@ -130,7 +128,7 @@ class _FilterButtonState extends State<_FilterButton> {
           child: Text('aply filter'),
           onPressed: () {
             print('apply filter: ${_selectedGenres.toString()}');
-            bloc.fetchDiscoverByFilter(_selectedGenres);
+            BlocProvider.of<DiscoverScreenBloc>(context).fetchDiscoverByFilter(_selectedGenres);
             Navigator.pop(context);
           });
     } else {
