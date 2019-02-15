@@ -60,7 +60,7 @@ class DiscoverScreenBloc implements BlocBase {
 
 DiscoverScreenBloc _bloc;
 
-DiscoverScreenBloc get discoverBloc {
+DiscoverScreenBloc get bloc {
   if (_bloc == null) {
     _bloc = DiscoverScreenBloc();
   }
