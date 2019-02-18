@@ -5,13 +5,13 @@ import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
 import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
 
 class MovieRepository {
-  final api = Api();
+  final _api = api;
 
-  Future<MovieListResponse> fetchPopularMovies() => api.fetchPopularMovies();
+  Future<MovieListResponse> fetchPopularMovies() => _api.fetchPopularMovies();
 
-  Future<MovieListResponse> fetchDiscover() => api.fetchDiscover();
+  Future<MovieListResponse> fetchDiscover() => _api.fetchDiscover();
 
-  Future<GenresResponse> fetchGenres() => api.fetchGenres();
+  Future<GenresResponse> fetchGenres() => _api.fetchGenres();
 
-  Future<MovieListResponse> fetchDiscoverByFilter(Set<int> selectedGenres) => api.fetchDiscoverByFilter(selectedGenres);
+  Future<MovieListResponse> fetchDiscoverByFilter(Set<int> selectedGenres) => _api.fetchDiscoverByFilter(selectedGenres);
 }

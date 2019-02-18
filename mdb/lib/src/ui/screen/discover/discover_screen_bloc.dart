@@ -5,9 +5,17 @@ import 'package:mdb/src/data/repository/movie_repository.dart';
 import 'package:mdb/src/utils/pair.dart';
 import 'package:rxdart/rxdart.dart';
 
-class DiscoverScreenBloc implements BlocBase {
+DiscoverScreenBloc _bloc;
 
-  DiscoverScreenBloc() {
+DiscoverScreenBloc get bloc {
+  if (_bloc == null) {
+    _bloc = DiscoverScreenBloc._internal();
+  }
+  return _bloc;
+}
+
+class DiscoverScreenBloc implements BlocBase {
+  DiscoverScreenBloc._internal() {
     fetchDiscover();
     fetchGenres();
   }
@@ -20,7 +28,10 @@ class DiscoverScreenBloc implements BlocBase {
 
   // Outputs
   Observable<MovieListResponse> get popularMovies => _popularMoviesFetcher.stream;
-  Observable<Pair<GenresResponse, Set<int>>> get genres => _genreFetcher.stream.zipWith(Stream.fromIterable(selectedGenres).toSet().asStream(), (a, b) => Pair(a, b));
+
+  Observable<Pair<GenresResponse, Set<int>>> get genres =>
+      _genreFetcher.stream.zipWith(Stream.fromIterable(selectedGenres).toSet().asStream(), (a, b) => Pair(a, b));
+
   Observable<MovieListResponse> get discoverMovies => _discoverFetcher.stream;
 
   @override
@@ -55,14 +66,4 @@ class DiscoverScreenBloc implements BlocBase {
       print(genresResponse.toString());
     }
   }
-
-}
-
-DiscoverScreenBloc _bloc;
-
-DiscoverScreenBloc get bloc {
-  if (_bloc == null) {
-    _bloc = DiscoverScreenBloc();
-  }
-  return _bloc;
 }

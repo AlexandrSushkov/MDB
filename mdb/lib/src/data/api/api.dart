@@ -3,39 +3,35 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
 import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
+import 'package:mdb/src/di/app_module.dart';
 import 'package:mdb/src/utils/constants.dart';
 
-class Api {
-  Dio dio = Dio();
+Api _api;
 
-  Api() {
-    dio.interceptors.add(apiKeyInterceptor);
-    dio.interceptors.add(baseUrlInterceptor);
-    dio.interceptors.add(logInterceptor);
+Api get api {
+  if (_api == null) {
+    _api = Api._internal();
   }
+  return _api;
+}
 
-  Interceptor get apiKeyInterceptor => InterceptorsWrapper(onRequest: (RequestOptions requestOptions) {
-        requestOptions.queryParameters.addAll({apiKey: theMovieDBApiKey});
-      });
+class Api {
+  Api._internal();
 
-  Interceptor get baseUrlInterceptor => InterceptorsWrapper(onRequest: (RequestOptions requestOptions) {
-        requestOptions.baseUrl = baseUrl;
-      });
-
-  Interceptor get logInterceptor => LogInterceptor(request: true, responseBody: true, error: true, requestHeader: false, responseHeader: false);
+  Dio _dio = appModule.dio;
 
   Future<MovieListResponse> fetchPopularMovies() async {
-    final response = await dio.get(popularMovies);
+    final response = await _dio.get(popularMovies);
     return MovieListResponse.fromJson(response.data);
   }
 
   Future<GenresResponse> fetchGenres() async {
-    final response = await dio.get(genres);
+    final response = await _dio.get(genres);
     return GenresResponse.fromJson(response.data);
   }
 
   Future<MovieListResponse> fetchDiscover() async {
-    final response = await dio.get(discover);
+    final response = await _dio.get(discover);
     return MovieListResponse.fromJson(response.data);
   }
 
@@ -53,7 +49,7 @@ class Api {
             ),
             '');
 
-    final response = await dio.get(discover, queryParameters: {withGenres: selected});
+    final response = await _dio.get(discover, queryParameters: {withGenres: selected});
     return MovieListResponse.fromJson(response.data);
   }
 }

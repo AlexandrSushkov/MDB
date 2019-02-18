@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mdb/src/bloc/movie_block.dart';
 import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
+import 'package:mdb/src/ui/screen/discover/discover_screen_bloc.dart';
 import 'package:mdb/src/ui/screen/discover/widget/movie_page_viver_item.dart';
 import 'package:mdb/src/utils/wigdet/page_transformer.dart';
 

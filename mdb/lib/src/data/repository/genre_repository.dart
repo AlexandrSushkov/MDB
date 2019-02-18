@@ -2,9 +2,7 @@ import 'package:mdb/src/data/api/api.dart';
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
 
 class GenreRepository {
+  final _api = api;
 
-  final api = Api();
-
-  Future<GenresResponse> fetchPopularMovies() => api.fetchGenres();
-
+  Future<GenresResponse> fetchPopularMovies() => _api.fetchGenres();
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mdb/src/bloc/movie_block.dart';
 import 'package:mdb/src/data/model/local/genre.dart';
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
+import 'package:mdb/src/ui/screen/discover/discover_screen_bloc.dart';
 import 'package:mdb/src/ui/screen/discover/widget/movie_page_viewer.dart';
 import 'package:mdb/src/utils/pair.dart';
 
