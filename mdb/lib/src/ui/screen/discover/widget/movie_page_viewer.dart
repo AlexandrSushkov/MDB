@@ -14,7 +14,7 @@ class _MoviePageViewerState extends State<MoviePageViewer> {
   Widget build(BuildContext context) {
     return Expanded(
       child: StreamBuilder(
-        stream: bloc.discoverMovies,
+        stream: discoverScreenBloc.discoverMovies,
         builder: (context, AsyncSnapshot<MovieListResponse> snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data.movies.length == 0) {

@@ -9,7 +9,7 @@ import 'package:rxdart/rxdart.dart';
 
 DiscoverScreenBloc _bloc;
 
-DiscoverScreenBloc get bloc {
+DiscoverScreenBloc get discoverScreenBloc {
   if (_bloc == null) {
     _bloc = DiscoverScreenBloc._internal();
   }
