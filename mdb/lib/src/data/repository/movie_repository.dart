@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:mdb/src/data/api/api.dart';
+import 'package:mdb/src/data/model/local/genre.dart';
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
 import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
 
@@ -11,7 +12,7 @@ class MovieRepository {
 
   Future<MovieListResponse> fetchDiscover() => _api.fetchDiscover();
 
-  Future<GenresResponse> fetchGenres() => _api.fetchGenres();
+  Future<List<Genre>> fetchGenres() => _api.fetchGenres();
 
   Future<MovieListResponse> fetchDiscoverByFilter(Set<int> selectedGenres) => _api.fetchDiscoverByFilter(selectedGenres);
 }

@@ -1,6 +1,8 @@
 import 'package:mdb/src/bloc/base/block_provider.dart';
+import 'package:mdb/src/data/model/local/genre.dart';
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
 import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
+import 'package:mdb/src/data/repository/genre_repository.dart';
 import 'package:mdb/src/data/repository/movie_repository.dart';
 import 'package:mdb/src/utils/pair.dart';
 import 'package:rxdart/rxdart.dart';
@@ -21,15 +23,16 @@ class DiscoverScreenBloc implements BlocBase {
   }
 
   final _movieRepository = MovieRepository();
+  final _genreRepository = GenreRepository();
   final _popularMoviesFetcher = PublishSubject<MovieListResponse>();
   final _discoverFetcher = PublishSubject<MovieListResponse>();
-  final _genreFetcher = BehaviorSubject<GenresResponse>();
+  final _genreFetcher = BehaviorSubject<List<Genre>>();
   final Set<int> selectedGenres = Set<int>();
 
   // Outputs
   Observable<MovieListResponse> get popularMovies => _popularMoviesFetcher.stream;
 
-  Observable<Pair<GenresResponse, Set<int>>> get genres =>
+  Observable<Pair<List<Genre>, Set<int>>> get genres =>
       _genreFetcher.stream.zipWith(Stream.fromIterable(selectedGenres).toSet().asStream(), (a, b) => Pair(a, b));
 
   Observable<MovieListResponse> get discoverMovies => _discoverFetcher.stream;
@@ -52,8 +55,11 @@ class DiscoverScreenBloc implements BlocBase {
   }
 
   fetchGenres() async {
-    GenresResponse genresResponse = await _movieRepository.fetchGenres();
-    _genreFetcher.sink.add(genresResponse);
+    await _genreRepository.fetchGenres().then((List<Genre> genres) {
+      _genreFetcher.sink.add(genres);
+    }).catchError((e) {
+      _handelError(e);
+    });
   }
 
   fetchDiscoverByFilter(Set<int> selectedGenres) async {
@@ -66,4 +72,6 @@ class DiscoverScreenBloc implements BlocBase {
       print(genresResponse.toString());
     }
   }
+
+  _handelError(Error e) => print(e);
 }

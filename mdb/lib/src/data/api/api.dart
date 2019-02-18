@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:mdb/src/data/model/local/genre.dart';
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
 import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
 import 'package:mdb/src/di/app_module.dart';
@@ -25,11 +26,6 @@ class Api {
     return MovieListResponse.fromJson(response.data);
   }
 
-  Future<GenresResponse> fetchGenres() async {
-    final response = await _dio.get(genres);
-    return GenresResponse.fromJson(response.data);
-  }
-
   Future<MovieListResponse> fetchDiscover() async {
     final response = await _dio.get(discover);
     return MovieListResponse.fromJson(response.data);
@@ -51,5 +47,14 @@ class Api {
 
     final response = await _dio.get(discover, queryParameters: {withGenres: selected});
     return MovieListResponse.fromJson(response.data);
+  }
+
+  Future<List<Genre>> fetchGenres() async {
+    try{
+      final response = await _dio.get(genres);
+      return GenresResponse.fromJson(response.data).genres;
+    }on DioError catch(e) {
+      return Future.error(e);
+    }
   }
 }
