@@ -53,6 +53,7 @@ class Api {
 
   Future<List<Genre>> fetchGenres() async {
     return await _dio.get(genres).then((genreResponse) {
+//      return Future.error(ArgumentError("genre test error"));
       return GenresResponse.fromJson(genreResponse.data).genres;
     });
   }

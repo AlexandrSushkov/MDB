@@ -36,20 +36,28 @@ class DiscoverScreenBloc implements BlocBase {
   }
 
   fetchPopularMovies() async {
-    MovieListResponse popularMoviesResponse = await _movieRepository.fetchPopularMovies();
-    _popularMoviesFetcher.sink.add(popularMoviesResponse);
+    await _movieRepository.fetchPopularMovies().then((MovieListResponse popularMoviesResponse) {
+      _popularMoviesFetcher.sink.add(popularMoviesResponse);
+      print(popularMoviesResponse.toString());
+    }).catchError((e) {
+      _handleError(e);
+    });
   }
 
   fetchDiscover() async {
-    MovieListResponse discoverMoviesResponse = await _movieRepository.fetchDiscover();
-    _discoverFetcher.sink.add(discoverMoviesResponse);
+    await _movieRepository.fetchDiscover().then((MovieListResponse genresResponse) {
+      _discoverFetcher.sink.add(genresResponse);
+      print(genresResponse.toString());
+    }).catchError((e) {
+      _handleError(e);
+    });
   }
 
   fetchGenres() async {
     await _genreRepository.fetchGenres().then((List<Genre> genres) {
       _genreFetcher.sink.add(genres);
     }).catchError((e) {
-      _handelError(e);
+      _handleError(e);
     });
   }
 
@@ -58,11 +66,14 @@ class DiscoverScreenBloc implements BlocBase {
       fetchDiscover();
     } else {
       selectedGenres.addAll(selectedGenres);
-      MovieListResponse genresResponse = await _movieRepository.fetchDiscoverByFilter(selectedGenres);
-      _discoverFetcher.sink.add(genresResponse);
-      print(genresResponse.toString());
+      await _movieRepository.fetchDiscoverByFilter(selectedGenres).then((MovieListResponse genresResponse) {
+        _discoverFetcher.sink.add(genresResponse);
+        print(genresResponse.toString());
+      }).catchError((e) {
+        _handleError(e);
+      });
     }
   }
 
-  _handelError(Error e) => print(e);
+  _handleError(Error e) => print(e);
 }
