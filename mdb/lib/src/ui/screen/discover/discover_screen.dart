@@ -11,20 +11,32 @@ class DiscoverScreen extends StatefulWidget {
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
   DiscoverScreenBloc _discoverScreenBloc;
+  GlobalKey<ScaffoldState> _key;
 
   @override
   Widget build(BuildContext context) {
+    _key = GlobalKey<ScaffoldState>();
     _discoverScreenBloc = BlocProvider.of<DiscoverScreenBloc>(context);
-    return Scaffold(body: _body());
+    _discoverScreenBloc.errorHandler.listen((errorMessage) {
+      _key.currentState.showSnackBar(SnackBar(
+        content: new Text(errorMessage),
+      ));
+    });
+    _discoverScreenBloc = BlocProvider.of<DiscoverScreenBloc>(context);
+    return Scaffold(key: _key, body: _buildBody());
   }
 
-  Widget _body() {
+  Widget _buildBody() {
     return Column(
-      children: <Widget>[MoviePageViewer(), _filterNavigation()],
+      children: <Widget>[_buildMoviePageViewer(), _buildFilterNavigation()],
     );
   }
 
-  Widget _filterNavigation() {
+  Widget _buildMoviePageViewer() {
+    return MoviePageViewer();
+  }
+
+  Widget _buildFilterNavigation() {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.end,
@@ -49,6 +61,4 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               discoverScreenBloc: _discoverScreenBloc,
             ));
   }
-
-//  FilterSheet _buildFilterSheet() => BlocProvider(child: FilterSheet(), bloc: BlocProvider.of<DiscoverScreenBloc>(context));
 }
