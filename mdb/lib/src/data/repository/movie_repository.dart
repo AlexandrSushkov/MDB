@@ -4,9 +4,13 @@ import 'package:mdb/src/data/api/api.dart';
 import 'package:mdb/src/data/model/local/genre.dart';
 import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
 import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
+import 'package:mdb/src/data/repository/mdb_repository.dart';
+import 'package:mdb/src/data/repository/repository_factory.dart';
 
-class MovieRepository {
-  final _api = api;
+class MovieRepositoryImpl implements MovieRepository{
+  final Api _api;
+
+  MovieRepositoryImpl(this._api);
 
   Future<MovieListResponse> fetchPopularMovies() => _api.fetchPopularMovies();
 
@@ -15,4 +19,11 @@ class MovieRepository {
   Future<List<Genre>> fetchGenres() => _api.fetchGenres();
 
   Future<MovieListResponse> fetchDiscoverByFilter(Set<int> selectedGenres) => _api.fetchDiscoverByFilter(selectedGenres);
+}
+
+abstract class MovieRepository extends MdbRepository{
+  Future<MovieListResponse> fetchPopularMovies();
+  Future<MovieListResponse> fetchDiscover();
+  Future<List<Genre>> fetchGenres();
+  Future<MovieListResponse> fetchDiscoverByFilter(Set<int> selectedGenres);
 }

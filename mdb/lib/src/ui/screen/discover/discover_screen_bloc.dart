@@ -1,29 +1,20 @@
 import 'package:mdb/src/bloc/base/block_provider.dart';
 import 'package:mdb/src/data/model/local/genre.dart';
-import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
 import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
 import 'package:mdb/src/data/repository/genre_repository.dart';
 import 'package:mdb/src/data/repository/movie_repository.dart';
 import 'package:mdb/src/utils/pair.dart';
 import 'package:rxdart/rxdart.dart';
 
-DiscoverScreenBloc _bloc;
-
-DiscoverScreenBloc get discoverScreenBloc {
-  if (_bloc == null) {
-    _bloc = DiscoverScreenBloc._internal();
-  }
-  return _bloc;
-}
-
 class DiscoverScreenBloc implements BlocBase {
-  DiscoverScreenBloc._internal() {
+  final MovieRepository _movieRepository;
+  final GenreRepository _genreRepository;
+
+  DiscoverScreenBloc(this._movieRepository, this._genreRepository) {
     fetchDiscover();
     fetchGenres();
   }
 
-  final _movieRepository = MovieRepository();
-  final _genreRepository = GenreRepository();
   final _popularMoviesFetcher = PublishSubject<MovieListResponse>();
   final _discoverFetcher = PublishSubject<MovieListResponse>();
   final _genreFetcher = BehaviorSubject<List<Genre>>();

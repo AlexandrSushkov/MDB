@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mdb/src/bloc/base/block_provider.dart';
 import 'package:mdb/src/data/model/local/genre.dart';
 import 'package:mdb/src/ui/screen/discover/discover_screen_bloc.dart';
 import 'package:mdb/src/utils/pair.dart';
 
 class FilterSheet extends StatefulWidget {
+
+  final DiscoverScreenBloc discoverScreenBloc;
+
+  const FilterSheet({Key key, this.discoverScreenBloc}) : super(key: key);
   @override
   _FilterSheetState createState() => _FilterSheetState();
 }
@@ -11,13 +16,16 @@ class FilterSheet extends StatefulWidget {
 class _FilterSheetState extends State<FilterSheet> {
   final Set<int> _selectedGenres = Set<int>();
 
+  DiscoverScreenBloc _discoverScreenBloc;
+
   @override
   Widget build(BuildContext context) {
     final _filterButton = _FilterButton(_selectedGenres);
 
+    _discoverScreenBloc = widget.discoverScreenBloc;
     //todo rewrite this chip tile, it cause of  ui lags.
     final _filterChip = StreamBuilder(
-        stream: discoverScreenBloc.genres,
+        stream: _discoverScreenBloc.genres,
         builder: (context, AsyncSnapshot<Pair<List<Genre>, Set<int>>> snapshot) {
           if (snapshot.hasData) {
             _selectedGenres.clear();
@@ -33,11 +41,11 @@ class _FilterSheetState extends State<FilterSheet> {
                     onSelected: (bool value) {
                       setState(() {
                         if (!value) {
-                          discoverScreenBloc.selectedGenres.remove(genre.id);
+                          _discoverScreenBloc.selectedGenres.remove(genre.id);
                           _selectedGenres.remove(genre.id);
                           print("romoves ${_selectedGenres.toString()}");
                         } else {
-                          discoverScreenBloc.selectedGenres.add(genre.id);
+                          _discoverScreenBloc.selectedGenres.add(genre.id);
                           _selectedGenres.add(genre.id);
                           print("added ${_selectedGenres.toString()}");
                         }
@@ -52,7 +60,10 @@ class _FilterSheetState extends State<FilterSheet> {
         });
 
     return Container(
-      decoration: BoxDecoration(border: Border(top: BorderSide(color: Theme.of(context).disabledColor))),
+      decoration: BoxDecoration(
+        color: Theme.of(context).canvasColor,
+        borderRadius: BorderRadius.only(topLeft: const Radius.circular(30), topRight: const Radius.circular(30)),
+      ),
       child: SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
           _filterChip,
@@ -60,7 +71,14 @@ class _FilterSheetState extends State<FilterSheet> {
 //          height: 300.0,
 //          color: Colors.blue,
 //        ),
-          _filterButton
+//          _filterButton
+          RaisedButton(
+              child: Text('aply filter'),
+              onPressed: () {
+                print('apply filter: ${_selectedGenres.toString()}');
+                _discoverScreenBloc.fetchDiscoverByFilter(_selectedGenres);
+                Navigator.pop(context);
+              })
         ]),
       ),
     );
@@ -89,7 +107,7 @@ class _FilterButtonState extends State<_FilterButton> {
           child: Text('aply filter'),
           onPressed: () {
             print('apply filter: ${_selectedGenres.toString()}');
-            discoverScreenBloc.fetchDiscoverByFilter(_selectedGenres);
+            BlocProvider.of<DiscoverScreenBloc>(context).fetchDiscoverByFilter(_selectedGenres);
             Navigator.pop(context);
           });
     } else {
@@ -132,11 +150,11 @@ class _ChipsTile extends StatelessWidget {
     if (children.isNotEmpty) {
       cardChildren.add(Wrap(
           children: children.map<Widget>((Widget chip) {
-            return Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: chip,
-            );
-          }).toList()));
+        return Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: chip,
+        );
+      }).toList()));
     } else {
       final TextStyle textStyle = Theme.of(context).textTheme.caption.copyWith(fontStyle: FontStyle.italic);
       cardChildren.add(Semantics(

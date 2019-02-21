@@ -11,15 +11,15 @@ Api _api;
 
 Api get api {
   if (_api == null) {
-    _api = Api._internal();
+    _api = Api._internal(appModule.dio);
   }
   return _api;
 }
 
 class Api {
-  Api._internal();
+  Api._internal(this._dio);
 
-  Dio _dio = appModule.dio;
+  final Dio _dio;
 
   Future<MovieListResponse> fetchPopularMovies() async {
     final response = await _dio.get(popularMovies);
@@ -50,10 +50,10 @@ class Api {
   }
 
   Future<List<Genre>> fetchGenres() async {
-    try{
+    try {
       final response = await _dio.get(genres);
       return GenresResponse.fromJson(response.data).genres;
-    }on DioError catch(e) {
+    } on DioError catch (e) {
       return Future.error(e);
     }
   }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mdb/src/bloc/base/block_provider.dart';
+import 'package:mdb/src/ui/screen/discover/discover_screen_bloc.dart';
 import 'package:mdb/src/ui/screen/discover/widget/filter_sheet.dart';
 import 'package:mdb/src/ui/screen/discover/widget/movie_page_viewer.dart';
 
@@ -8,8 +10,11 @@ class DiscoverScreen extends StatefulWidget {
 }
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
+  DiscoverScreenBloc _discoverScreenBloc;
+
   @override
   Widget build(BuildContext context) {
+    _discoverScreenBloc = BlocProvider.of<DiscoverScreenBloc>(context);
     return Scaffold(body: _body());
   }
 
@@ -29,11 +34,21 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           child: IconButton(
             icon: Icon(Icons.filter_list),
             onPressed: () {
-              showModalBottomSheet<void>(context: context, builder: (BuildContext context) => FilterSheet());
+              _onFilterButtonClick();
             },
           ),
         ),
       ],
     );
   }
+
+  void _onFilterButtonClick() {
+    showModalBottomSheet<void>(
+        context: context,
+        builder: (BuildContext context) => FilterSheet(
+              discoverScreenBloc: _discoverScreenBloc,
+            ));
+  }
+
+//  FilterSheet _buildFilterSheet() => BlocProvider(child: FilterSheet(), bloc: BlocProvider.of<DiscoverScreenBloc>(context));
 }
