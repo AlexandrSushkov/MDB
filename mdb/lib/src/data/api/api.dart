@@ -22,13 +22,15 @@ class Api {
   final Dio _dio;
 
   Future<MovieListResponse> fetchPopularMovies() async {
-    final response = await _dio.get(popularMovies);
-    return MovieListResponse.fromJson(response.data);
+    return await _dio.get(popularMovies).then((movieListResponse) {
+      return MovieListResponse.fromJson(movieListResponse.data);
+    });
   }
 
   Future<MovieListResponse> fetchDiscover() async {
-    final response = await _dio.get(discover);
-    return MovieListResponse.fromJson(response.data);
+    return await _dio.get(discover).then((movieListResponse) {
+      return MovieListResponse.fromJson(movieListResponse.data);
+    });
   }
 
   Future<MovieListResponse> fetchDiscoverByFilter(Set<int> selectedGenres) async {
@@ -44,17 +46,14 @@ class Api {
               r'}',
             ),
             '');
-
-    final response = await _dio.get(discover, queryParameters: {withGenres: selected});
-    return MovieListResponse.fromJson(response.data);
+    return await _dio.get(discover, queryParameters: {withGenres: selected}).then((movieListResponse) {
+      return MovieListResponse.fromJson(movieListResponse.data);
+    });
   }
 
   Future<List<Genre>> fetchGenres() async {
-    try {
-      final response = await _dio.get(genres);
-      return GenresResponse.fromJson(response.data).genres;
-    } on DioError catch (e) {
-      return Future.error(e);
-    }
+    return await _dio.get(genres).then((genreResponse) {
+      return GenresResponse.fromJson(genreResponse.data).genres;
+    });
   }
 }

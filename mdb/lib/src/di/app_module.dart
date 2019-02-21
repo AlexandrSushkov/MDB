@@ -5,14 +5,14 @@ AppModule _appModule;
 
 AppModule get appModule {
   if (_appModule == null) {
-    _appModule = AppModule.internal();
+    _appModule = AppModule._internal();
   }
   return
     _appModule;
 }
 
 class AppModule {
-  AppModule.internal();
+  AppModule._internal();
 
   Dio _dio;
 
@@ -42,5 +42,4 @@ class AppModule {
           error: true,
           requestHeader: false,
           responseHeader: false);
-
 }
