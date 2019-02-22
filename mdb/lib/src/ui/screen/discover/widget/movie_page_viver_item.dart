@@ -60,22 +60,17 @@ class MoviePageViewerItem extends StatelessWidget {
               children: <Widget>[
                 ClipRRect(
                   borderRadius: BorderRadius.circular(_cornerRadius),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: _onPosterClick(context, movie),
-                      child: Image.network('$imageBaseUrl$imageSizePrefixLarge${movie.posterPath}',
-                          fit: BoxFit.cover,
-                          alignment: FractionalOffset(
-                            0.5 + (pageVisibility.pagePosition / 3),
-                            0.5,
-                          )),
-                    ),
-                  ),
+                  child: Image.network('$imageBaseUrl$imageSizePrefixLarge${movie.posterPath}',
+                      fit: BoxFit.cover,
+                      alignment: FractionalOffset(
+                        0.5 + (pageVisibility.pagePosition / 3),
+                        0.5,
+                      )),
                 ),
 //                _buildTextContainer(context),
                 Material(
                   type: MaterialType.transparency,
+                  borderRadius: BorderRadius.circular(_cornerRadius),
                   child: InkWell(onTap: () {
                     _showProductDetailsPage(context);
                   }),
