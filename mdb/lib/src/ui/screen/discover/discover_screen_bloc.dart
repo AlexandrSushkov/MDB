@@ -19,6 +19,8 @@ class DiscoverScreenBloc implements BlocBase {
   final _discoverFetcher = PublishSubject<MovieListResponse>();
   final _genreFetcher = BehaviorSubject<List<Genre>>();
   final _errorHandler = BehaviorSubject<String>();
+  final _onFilterClick = PublishSubject<void>();
+
   final Set<int> selectedGenres = Set<int>();
 
   // Outputs
@@ -31,12 +33,15 @@ class DiscoverScreenBloc implements BlocBase {
 
   Observable<String> get errorHandler => _errorHandler.stream;
 
+  Observable<void> get onFilterClickStream => _onFilterClick.stream;
+
   @override
   void dispose() {
     _popularMoviesFetcher.close();
     _discoverFetcher.close();
     _genreFetcher.close();
     _errorHandler.close();
+    _onFilterClick.close();
   }
 
   fetchPopularMovies() async {
@@ -77,6 +82,10 @@ class DiscoverScreenBloc implements BlocBase {
         _handleError(e);
       });
     }
+  }
+
+  onFilterClick(){
+    _onFilterClick.sink.add(VoidFunc);
   }
 
 //  _handleError(Error e) => _errorHandler.sink.add(e.toString());

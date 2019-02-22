@@ -14,15 +14,26 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   GlobalKey<ScaffoldState> _key;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     _key = GlobalKey<ScaffoldState>();
     _discoverScreenBloc = BlocProvider.of<DiscoverScreenBloc>(context);
+    _discoverScreenBloc.onFilterClickStream.listen((_) {
+      showModalBottomSheet<void>(
+          context: context,
+          builder: (BuildContext context) => FilterSheet(
+                discoverScreenBloc: _discoverScreenBloc,
+              ));
+    });
     _discoverScreenBloc.errorHandler.listen((errorMessage) {
       _key.currentState.showSnackBar(SnackBar(
         content: new Text(errorMessage),
       ));
     });
-    _discoverScreenBloc = BlocProvider.of<DiscoverScreenBloc>(context);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(key: _key, body: _buildBody());
   }
 
@@ -32,9 +43,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     );
   }
 
-  Widget _buildMoviePageViewer() {
-    return MoviePageViewer();
-  }
+  Widget _buildMoviePageViewer() => MoviePageViewer();
 
   Widget _buildFilterNavigation() {
     return Row(
@@ -46,7 +55,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           child: IconButton(
             icon: Icon(Icons.filter_list),
             onPressed: () {
-              _onFilterButtonClick();
+//              _onFilterButtonClick();
+              _discoverScreenBloc.onFilterClick();
             },
           ),
         ),
