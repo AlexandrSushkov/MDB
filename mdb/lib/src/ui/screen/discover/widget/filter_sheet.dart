@@ -25,7 +25,7 @@ class _FilterSheetState extends State<FilterSheet> {
     _discoverScreenBloc = widget.discoverScreenBloc;
     //todo rewrite this chip tile, it cause of  ui lags.
     final _filterChip = StreamBuilder(
-        stream: _discoverScreenBloc.genres,
+        stream: _discoverScreenBloc.genresState,
         builder: (context, AsyncSnapshot<Pair<List<Genre>, Set<int>>> snapshot) {
           if (snapshot.hasData) {
             _selectedGenres.clear();
@@ -76,7 +76,7 @@ class _FilterSheetState extends State<FilterSheet> {
               child: Text('aply filter'),
               onPressed: () {
                 print('apply filter: ${_selectedGenres.toString()}');
-                _discoverScreenBloc.fetchDiscoverByFilter(_selectedGenres);
+                _discoverScreenBloc.applyFilterEvent.add(_selectedGenres);
                 Navigator.pop(context);
               })
         ]),
@@ -107,7 +107,7 @@ class _FilterButtonState extends State<_FilterButton> {
           child: Text('aply filter'),
           onPressed: () {
             print('apply filter: ${_selectedGenres.toString()}');
-            BlocProvider.of<DiscoverScreenBloc>(context).fetchDiscoverByFilter(_selectedGenres);
+            BlocProvider.of<DiscoverScreenBloc>(context).applyFilterEvent.add(_selectedGenres);
             Navigator.pop(context);
           });
     } else {

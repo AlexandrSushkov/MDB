@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mdb/src/bloc/base/block_provider.dart';
 import 'package:mdb/src/data/model/local/genre.dart';
 import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
@@ -11,86 +13,92 @@ class DiscoverScreenBloc implements BlocBase {
   final GenreRepository _genreRepository;
 
   DiscoverScreenBloc(this._movieRepository, this._genreRepository) {
-    fetchDiscover();
-    fetchGenres();
+    _initListeners();
+    _fetchPopularMovies();
+    _fetchGenres();
   }
-
-  final _popularMoviesFetcher = PublishSubject<MovieListResponse>();
-  final _discoverFetcher = PublishSubject<MovieListResponse>();
-  final _genreFetcher = BehaviorSubject<List<Genre>>();
-  final _errorHandler = BehaviorSubject<String>();
-  final _onFilterClick = PublishSubject<void>();
 
   final Set<int> selectedGenres = Set<int>();
 
+  //Inputs
+  final _onFilterClickEventStreamController = PublishSubject<void>();
+  final _applyFilterStreamController = PublishSubject<Set<int>>();
+
+  //input getters
+  Sink<void> get onFilterClickEvent => _onFilterClickEventStreamController.sink;
+
+  Sink<Set<int>> get applyFilterEvent => _applyFilterStreamController.sink;
+
   // Outputs
-  Observable<MovieListResponse> get popularMovies => _popularMoviesFetcher.stream;
+  final _movieListStreamController = BehaviorSubject<MovieListResponse>();
+  final _genreListStreamController = BehaviorSubject<List<Genre>>();
+  final _errorHandlerStreamController = BehaviorSubject<String>();
+  final _onFilterClickStateStreamController = PublishSubject<void>();
 
-  Observable<Pair<List<Genre>, Set<int>>> get genres =>
-      _genreFetcher.stream.zipWith(Stream.fromIterable(selectedGenres).toSet().asStream(), (a, b) => Pair(a, b));
+  //output getters
+  Observable<MovieListResponse> get moviesState => _movieListStreamController.stream;
 
-  Observable<MovieListResponse> get discoverMovies => _discoverFetcher.stream;
+  Observable<Pair<List<Genre>, Set<int>>> get genresState =>
+      _genreListStreamController.stream.zipWith(Stream.fromIterable(selectedGenres).toSet().asStream(), (a, b) => Pair(a, b));
 
-  Observable<String> get errorHandler => _errorHandler.stream;
+  Observable<String> get errorHandlerState => _errorHandlerStreamController.stream;
 
-  Observable<void> get onFilterClickStream => _onFilterClick.stream;
+  Observable<void> get onFilterClickState => _onFilterClickStateStreamController.stream;
 
   @override
   void dispose() {
-    _popularMoviesFetcher.close();
-    _discoverFetcher.close();
-    _genreFetcher.close();
-    _errorHandler.close();
-    _onFilterClick.close();
+    _movieListStreamController.close();
+    _genreListStreamController.close();
+    _errorHandlerStreamController.close();
+    _onFilterClickEventStreamController.close();
+    _onFilterClickStateStreamController.close();
+    _applyFilterStreamController.close();
   }
 
-  fetchPopularMovies() async {
+  _initListeners() {
+    _onFilterClickEventStreamController.stream.listen((_) => _showFilterSheet());
+    _applyFilterStreamController.stream.listen((Set<int> selectedGenres) {
+      if (selectedGenres.length == 0) {
+        _fetchPopularMovies();
+      } else {
+        _fetchDiscoverByFilter(selectedGenres);
+      }
+    });
+  }
+
+  _fetchPopularMovies() async {
     await _movieRepository.fetchPopularMovies().then((MovieListResponse popularMoviesResponse) {
-      _popularMoviesFetcher.sink.add(popularMoviesResponse);
+      _movieListStreamController.sink.add(popularMoviesResponse);
       print(popularMoviesResponse.toString());
     }).catchError((e) {
       _handleError(e);
     });
   }
 
-  fetchDiscover() async {
-    await _movieRepository.fetchDiscover().then((MovieListResponse genresResponse) {
-      _discoverFetcher.sink.add(genresResponse);
+  _fetchGenres() async {
+    await _genreRepository.fetchGenres().then((List<Genre> genres) {
+      _genreListStreamController.sink.add(genres);
+    }).catchError((e) {
+      _handleError(e);
+    });
+  }
+
+  _fetchDiscoverByFilter(Set<int> selectedGenres) async {
+    await _movieRepository.fetchDiscoverByFilter(selectedGenres).then((MovieListResponse genresResponse) {
+      _movieListStreamController.sink.add(genresResponse);
       print(genresResponse.toString());
     }).catchError((e) {
       _handleError(e);
     });
   }
 
-  fetchGenres() async {
-    await _genreRepository.fetchGenres().then((List<Genre> genres) {
-      _genreFetcher.sink.add(genres);
-    }).catchError((e) {
-      _handleError(e);
-    });
-  }
-
-  fetchDiscoverByFilter(Set<int> selectedGenres) async {
-    if (selectedGenres.length == 0) {
-      fetchDiscover();
-    } else {
-      selectedGenres.addAll(selectedGenres);
-      await _movieRepository.fetchDiscoverByFilter(selectedGenres).then((MovieListResponse genresResponse) {
-        _discoverFetcher.sink.add(genresResponse);
-        print(genresResponse.toString());
-      }).catchError((e) {
-        _handleError(e);
-      });
-    }
-  }
-
-  onFilterClick(){
-    _onFilterClick.sink.add(VoidFunc);
+  _showFilterSheet() {
+    _onFilterClickStateStreamController.sink.add(VoidFunc);
   }
 
 //  _handleError(Error e) => _errorHandler.sink.add(e.toString());
   _handleError(Error e) {
-    _errorHandler.sink.add(e.toString());
+    _errorHandlerStreamController.sink.add(e.toString());
     print(e);
   }
 }

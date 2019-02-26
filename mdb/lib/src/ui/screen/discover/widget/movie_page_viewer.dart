@@ -19,7 +19,7 @@ class _MoviePageViewerState extends State<MoviePageViewer> {
 
     return Expanded(
       child: StreamBuilder(
-        stream: _discoverScreenBloc.discoverMovies,
+        stream: _discoverScreenBloc.moviesState,
         builder: (context, AsyncSnapshot<MovieListResponse> snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data.movies.length == 0) {

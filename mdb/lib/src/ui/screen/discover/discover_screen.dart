@@ -3,6 +3,7 @@ import 'package:mdb/src/bloc/base/block_provider.dart';
 import 'package:mdb/src/ui/screen/discover/discover_screen_bloc.dart';
 import 'package:mdb/src/ui/screen/discover/widget/filter_sheet.dart';
 import 'package:mdb/src/ui/screen/discover/widget/movie_page_viewer.dart';
+import 'package:rxdart/rxdart.dart';
 
 class DiscoverScreen extends StatefulWidget {
   @override
@@ -17,14 +18,14 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   void initState() {
     _key = GlobalKey<ScaffoldState>();
     _discoverScreenBloc = BlocProvider.of<DiscoverScreenBloc>(context);
-    _discoverScreenBloc.onFilterClickStream.listen((_) {
+    _discoverScreenBloc.onFilterClickState.listen((_) {
       showModalBottomSheet<void>(
           context: context,
           builder: (BuildContext context) => FilterSheet(
                 discoverScreenBloc: _discoverScreenBloc,
               ));
     });
-    _discoverScreenBloc.errorHandler.listen((errorMessage) {
+    _discoverScreenBloc.errorHandlerState.listen((errorMessage) {
       _key.currentState.showSnackBar(SnackBar(
         content: new Text(errorMessage),
       ));
@@ -55,20 +56,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           child: IconButton(
             icon: Icon(Icons.filter_list),
             onPressed: () {
-//              _onFilterButtonClick();
-              _discoverScreenBloc.onFilterClick();
+              _discoverScreenBloc.onFilterClickEvent.add(VoidFunc);
             },
           ),
         ),
       ],
     );
-  }
-
-  void _onFilterButtonClick() {
-    showModalBottomSheet<void>(
-        context: context,
-        builder: (BuildContext context) => FilterSheet(
-              discoverScreenBloc: _discoverScreenBloc,
-            ));
   }
 }
