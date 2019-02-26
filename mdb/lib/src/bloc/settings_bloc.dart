@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:mdb/src/bloc/base/block_provider.dart';
 
-class SettingBloc implements BlocBase {
+class SettingBloc implements DisposableBloc {
 
   StreamController<bool> _themeController = StreamController<bool>();
   Sink<bool> get themeController => _themeController.sink;

@@ -41,11 +41,11 @@ class _FilterSheetState extends State<FilterSheet> {
                     onSelected: (bool value) {
                       setState(() {
                         if (!value) {
-                          _discoverScreenBloc.selectedGenres.remove(genre.id);
                           _selectedGenres.remove(genre.id);
+                          _discoverScreenBloc.removeFilter.add(genre.id);
                           print("romoves ${_selectedGenres.toString()}");
                         } else {
-                          _discoverScreenBloc.selectedGenres.add(genre.id);
+                          _discoverScreenBloc.addFilter.add(genre.id);
                           _selectedGenres.add(genre.id);
                           print("added ${_selectedGenres.toString()}");
                         }

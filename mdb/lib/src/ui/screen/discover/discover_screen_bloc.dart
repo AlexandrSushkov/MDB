@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:mdb/src/bloc/base/block_provider.dart';
+import 'package:mdb/src/bloc/base/base_bloc.dart';
 import 'package:mdb/src/data/model/local/genre.dart';
 import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
 import 'package:mdb/src/data/repository/genre_repository.dart';
@@ -8,9 +8,23 @@ import 'package:mdb/src/data/repository/movie_repository.dart';
 import 'package:mdb/src/utils/pair.dart';
 import 'package:rxdart/rxdart.dart';
 
-class DiscoverScreenBloc implements BlocBase {
+class DiscoverScreenBloc extends BaseBloc {
   final MovieRepository _movieRepository;
   final GenreRepository _genreRepository;
+  final _subscriptions = <StreamSubscription<dynamic>>[];
+  final Set<int> _selectedGenres = Set<int>();
+
+  //event controllers
+  final _onFilterClickEventStreamController = PublishSubject<void>();
+  final _applyFilterStreamController = PublishSubject<Set<int>>();
+  final _addFilterStreamController = PublishSubject<int>();
+  final _removeFilterStreamController = PublishSubject<int>();
+
+  //state controllers
+  final _movieListStreamController = BehaviorSubject<MovieListResponse>();
+  final _genreListStreamController = BehaviorSubject<List<Genre>>();
+  final _errorHandlerStreamController = PublishSubject<String>();
+  final _onFilterClickStateStreamController = PublishSubject<void>();
 
   DiscoverScreenBloc(this._movieRepository, this._genreRepository) {
     _initListeners();
@@ -18,28 +32,20 @@ class DiscoverScreenBloc implements BlocBase {
     _fetchGenres();
   }
 
-  final Set<int> selectedGenres = Set<int>();
-
-  //Inputs
-  final _onFilterClickEventStreamController = PublishSubject<void>();
-  final _applyFilterStreamController = PublishSubject<Set<int>>();
-
-  //input getters
+  //input
   Sink<void> get onFilterClickEvent => _onFilterClickEventStreamController.sink;
 
   Sink<Set<int>> get applyFilterEvent => _applyFilterStreamController.sink;
 
-  // Outputs
-  final _movieListStreamController = BehaviorSubject<MovieListResponse>();
-  final _genreListStreamController = BehaviorSubject<List<Genre>>();
-  final _errorHandlerStreamController = BehaviorSubject<String>();
-  final _onFilterClickStateStreamController = PublishSubject<void>();
+  Sink<int> get addFilter => _addFilterStreamController.sink;
 
-  //output getters
+  Sink<int> get removeFilter => _removeFilterStreamController.sink;
+
+  // Outputs
   Observable<MovieListResponse> get moviesState => _movieListStreamController.stream;
 
   Observable<Pair<List<Genre>, Set<int>>> get genresState =>
-      _genreListStreamController.stream.zipWith(Stream.fromIterable(selectedGenres).toSet().asStream(), (a, b) => Pair(a, b));
+      _genreListStreamController.stream.zipWith(Stream.fromIterable(_selectedGenres).toSet().asStream(), (a, b) => Pair(a, b));
 
   Observable<String> get errorHandlerState => _errorHandlerStreamController.stream;
 
@@ -47,24 +53,28 @@ class DiscoverScreenBloc implements BlocBase {
 
   @override
   void dispose() {
-    _movieListStreamController.close();
-    _genreListStreamController.close();
-    _errorHandlerStreamController.close();
-    _onFilterClickEventStreamController.close();
-    _onFilterClickStateStreamController.close();
-    _applyFilterStreamController.close();
+    _closeControllers();
+    _clearSubscriptions();
   }
 
   _initListeners() {
-    _onFilterClickEventStreamController.stream.listen((_) => _showFilterSheet());
-    _applyFilterStreamController.stream.listen((Set<int> selectedGenres) {
+    _subscriptions.add(_onFilterClickEventStreamController.stream.listen((_) => _showFilterSheet()));
+    _subscriptions.add(_applyFilterStreamController.stream.listen((Set<int> selectedGenres) {
       if (selectedGenres.length == 0) {
         _fetchPopularMovies();
       } else {
         _fetchDiscoverByFilter(selectedGenres);
       }
-    });
-  }
+    }));
+    _subscriptions.add(_addFilterStreamController.stream.listen((genreId) {
+      _selectedGenres.add(genreId);
+      print(_selectedGenres.toString());
+    }));
+    _subscriptions.add(_removeFilterStreamController.stream.listen((genreId) {
+      _selectedGenres.remove(genreId);
+      print(_selectedGenres.toString());
+    }));
+    }
 
   _fetchPopularMovies() async {
     await _movieRepository.fetchPopularMovies().then((MovieListResponse popularMoviesResponse) {
@@ -100,5 +110,20 @@ class DiscoverScreenBloc implements BlocBase {
   _handleError(Error e) {
     _errorHandlerStreamController.sink.add(e.toString());
     print(e);
+  }
+
+  _closeControllers() {
+    _onFilterClickStateStreamController.close();
+    _onFilterClickEventStreamController.close();
+    _applyFilterStreamController.close();
+    _movieListStreamController.close();
+    _genreListStreamController.close();
+    _errorHandlerStreamController.close();
+    _addFilterStreamController.close();
+    _removeFilterStreamController.close();
+  }
+
+  _clearSubscriptions() {
+    _subscriptions.forEach((subscription) => subscription.cancel());
   }
 }
