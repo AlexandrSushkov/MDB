@@ -6,9 +6,6 @@ import 'package:mdb/src/utils/pair.dart';
 
 class FilterSheet extends StatefulWidget {
 
-  final DiscoverScreenBloc discoverScreenBloc;
-
-  const FilterSheet({Key key, this.discoverScreenBloc}) : super(key: key);
   @override
   _FilterSheetState createState() => _FilterSheetState();
 }
@@ -22,66 +19,65 @@ class _FilterSheetState extends State<FilterSheet> {
   Widget build(BuildContext context) {
     final _filterButton = _FilterButton(_selectedGenres);
 
-    _discoverScreenBloc = widget.discoverScreenBloc;
     //todo rewrite this chip tile, it cause of  ui lags.
-    final _filterChip = StreamBuilder(
-        stream: _discoverScreenBloc.genresState,
-        builder: (context, AsyncSnapshot<Pair<List<Genre>, Set<int>>> snapshot) {
-          if (snapshot.hasData) {
-            _selectedGenres.clear();
-            _selectedGenres.addAll(snapshot.data.item2);
-            print('return chipTile');
-            return _ChipsTile(
-              label: 'filter',
-              children: snapshot.data.item1.map<Widget>((Genre genre) {
-                return FilterChip(
-                    key: ValueKey<String>(genre.id.toString()),
-                    label: Text(genre.name),
-                    selected: _selectedGenres.contains(genre.id),
-                    onSelected: (bool value) {
-                      setState(() {
-                        if (!value) {
-                          _selectedGenres.remove(genre.id);
-                          _discoverScreenBloc.removeFilter.add(genre.id);
-                          print("romoves ${_selectedGenres.toString()}");
-                        } else {
-                          _discoverScreenBloc.addFilter.add(genre.id);
-                          _selectedGenres.add(genre.id);
-                          print("added ${_selectedGenres.toString()}");
-                        }
-                      });
-                    });
-              }).toList(),
-            );
-          } else if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-          return Center(child: CircularProgressIndicator());
-        });
+//    final _filterChip = StreamBuilder(
+//        stream: _discoverScreenBloc.genresState,
+//        builder: (context, AsyncSnapshot<Pair<List<Genre>, Set<int>>> snapshot) {
+//          if (snapshot.hasData) {
+//            _selectedGenres.clear();
+//            _selectedGenres.addAll(snapshot.data.item2);
+//            print('return chipTile');
+//            return _ChipsTile(
+//              label: 'filter',
+//              children: snapshot.data.item1.map<Widget>((Genre genre) {
+//                return FilterChip(
+//                    key: ValueKey<String>(genre.id.toString()),
+//                    label: Text(genre.name),
+//                    selected: _selectedGenres.contains(genre.id),
+//                    onSelected: (bool value) {
+//                      setState(() {
+//                        if (!value) {
+//                          _selectedGenres.remove(genre.id);
+//                          _discoverScreenBloc.removeFilter.add(genre.id);
+//                          print("romoves ${_selectedGenres.toString()}");
+//                        } else {
+//                          _discoverScreenBloc.addFilter.add(genre.id);
+//                          _selectedGenres.add(genre.id);
+//                          print("added ${_selectedGenres.toString()}");
+//                        }
+//                      });
+//                    });
+//              }).toList(),
+//            );
+//          } else if (snapshot.hasError) {
+//            return Text(snapshot.error.toString());
+//          }
+//          return Center(child: CircularProgressIndicator());
+//        });
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).canvasColor,
-        borderRadius: BorderRadius.only(topLeft: const Radius.circular(30), topRight: const Radius.circular(30)),
-      ),
-      child: SingleChildScrollView(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
-          _filterChip,
-//        Container(
-//          height: 300.0,
-//          color: Colors.blue,
-//        ),
-//          _filterButton
-          RaisedButton(
-              child: Text('aply filter'),
-              onPressed: () {
-                print('apply filter: ${_selectedGenres.toString()}');
-                _discoverScreenBloc.applyFilterEvent.add(_selectedGenres);
-                Navigator.pop(context);
-              })
-        ]),
-      ),
-    );
+//    return Container(
+//      decoration: BoxDecoration(
+//        color: Theme.of(context).canvasColor,
+//        borderRadius: BorderRadius.only(topLeft: const Radius.circular(30), topRight: const Radius.circular(30)),
+//      ),
+//      child: SingleChildScrollView(
+//        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
+//          _filterChip,
+////        Container(
+////          height: 300.0,
+////          color: Colors.blue,
+////        ),
+////          _filterButton
+//          RaisedButton(
+//              child: Text('aply filter'),
+//              onPressed: () {
+//                print('apply filter: ${_selectedGenres.toString()}');
+//                _discoverScreenBloc.applyFilterEvent.add(_selectedGenres);
+//                Navigator.pop(context);
+//              })
+//        ]),
+//      ),
+//    );
   }
 }
 

@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:mdb/src/bloc/base/block_provider.dart';
-import 'package:mdb/src/data/repository/genre_repository.dart';
-import 'package:mdb/src/data/repository/movie_repository.dart';
-import 'package:mdb/src/data/repository/repository_factory.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:mdb/src/redux/actions/actions.dart';
+import 'package:mdb/src/redux/mdb_state.dart';
+import 'package:mdb/src/redux/middleware/movies_middleware.dart';
+import 'package:mdb/src/redux/reducers/mdb_reducer.dart';
+import 'package:mdb/src/redux/routes/MdbRoutes.dart';
 import 'package:mdb/src/ui/screen/discover/discover_screen.dart';
-import 'package:mdb/src/ui/screen/discover/discover_screen_bloc.dart';
+import 'package:redux/redux.dart';
 
 class App extends StatelessWidget {
+  final store = Store<MdbState>(mdbReducer, initialState: MdbState.loading(), middleware: moviesMiddleware());
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(primaryColor: Colors.white),
-      home: BlocProvider(
-          bloc: DiscoverScreenBloc(RepositoryFactory.provide<MovieRepository>(), RepositoryFactory.provide<GenreRepository>()), child: DiscoverScreen()),
+    return StoreProvider<MdbState>(
+      store: store,
+      child: MaterialApp(
+        theme: ThemeData(primaryColor: Colors.white),
+        routes: {
+          MdbRoutes.home: (context) {
+            return DiscoverScreen(onInit: () {
+              StoreProvider.of<MdbState>(context).dispatch(LoadMoviesAction());
+            });
+          }
+        },
+      ),
     );
   }
 }
