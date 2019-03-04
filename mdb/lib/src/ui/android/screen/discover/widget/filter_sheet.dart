@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mdb/src/bloc/base/block_provider.dart';
 import 'package:mdb/src/data/model/local/genre.dart';
-import 'package:mdb/src/ui/screen/discover/discover_screen_bloc.dart';
 import 'package:mdb/src/utils/pair.dart';
 
 class FilterSheet extends StatefulWidget {
@@ -12,8 +10,6 @@ class FilterSheet extends StatefulWidget {
 
 class _FilterSheetState extends State<FilterSheet> {
   final Set<int> _selectedGenres = Set<int>();
-
-  DiscoverScreenBloc _discoverScreenBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +99,6 @@ class _FilterButtonState extends State<_FilterButton> {
           child: Text('aply filter'),
           onPressed: () {
             print('apply filter: ${_selectedGenres.toString()}');
-            BlocProvider.of<DiscoverScreenBloc>(context).applyFilterEvent.add(_selectedGenres);
             Navigator.pop(context);
           });
     } else {

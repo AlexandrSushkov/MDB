@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mdb/src/redux/containers/app_loading.dart';
 import 'package:mdb/src/redux/presentation/loading_indicator.dart';
-import 'package:mdb/src/ui/screen/discover/widget/movie_page_viewer.dart';
+import 'package:mdb/src/ui/android/screen/discover/widget/movie_page_viewer.dart';
 
 class DiscoverScreen extends StatefulWidget {
   final void Function() onInit;

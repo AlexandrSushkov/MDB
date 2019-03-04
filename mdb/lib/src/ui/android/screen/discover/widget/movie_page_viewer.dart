@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:mdb/src/data/model/local/movie.dart';
 import 'package:mdb/src/redux/mdb_state.dart';
-import 'package:mdb/src/ui/screen/discover/widget/movie_page_viver_item.dart';
+import 'package:mdb/src/ui/android/screen/discover/widget/movie_page_viver_item.dart';
 import 'package:mdb/src/utils/wigdet/page_transformer.dart';
 import 'package:redux/redux.dart';
 
