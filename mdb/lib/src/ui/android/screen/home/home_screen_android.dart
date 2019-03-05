@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:mdb/src/redux/containers/app_loading.dart';
 import 'package:mdb/src/redux/presentation/loading_indicator.dart';
-import 'package:mdb/src/ui/android/screen/discover/widget/movie_page_viewer.dart';
+import 'package:mdb/src/ui/android/screen/home/widget/movie_page_viewer.dart';
 
-class DiscoverScreen extends StatefulWidget {
+class HomeScreenAndroid extends StatefulWidget {
   final void Function() onInit;
 
-  const DiscoverScreen({Key key, this.onInit}) : super(key: key);
+  const HomeScreenAndroid({Key key, this.onInit}) : super(key: key);
 
   @override
-  _DiscoverScreenState createState() => _DiscoverScreenState();
+  _HomeScreenAndroidState createState() => _HomeScreenAndroidState();
 }
 
-class _DiscoverScreenState extends State<DiscoverScreen> {
+class _HomeScreenAndroidState extends State<HomeScreenAndroid> {
   GlobalKey<ScaffoldState> _key;
 
   @override
@@ -34,7 +34,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   Widget _buildBody() {
     return Column(
-      children: <Widget>[_buildMoviePageViewer(), _buildFilterNavigation()],
+      children: <Widget>[_buildMoviePageViewer(),
+//      _buildFilterNavigation()
+      ],
     );
   }
 

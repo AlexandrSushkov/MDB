@@ -2,10 +2,8 @@ import 'dart:async';
 
 import 'package:mdb/src/data/api/api.dart';
 import 'package:mdb/src/data/model/local/genre.dart';
-import 'package:mdb/src/data/model/remote/responce/genres_response.dart';
 import 'package:mdb/src/data/model/remote/responce/movie_list_response.dart';
 import 'package:mdb/src/data/repository/mdb_repository.dart';
-import 'package:mdb/src/data/repository/repository_factory.dart';
 
 class MovieRepositoryImpl implements MovieRepository{
   final Api _api;
